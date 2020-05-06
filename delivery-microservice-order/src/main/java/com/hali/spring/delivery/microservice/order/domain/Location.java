@@ -1,5 +1,6 @@
 package com.hali.spring.delivery.microservice.order.domain;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 
 import org.springframework.data.geo.Point;
@@ -9,12 +10,9 @@ import lombok.Setter;
 
 @Setter
 @Getter
+@Embeddable
 public class Location 
 {
-	@Id
-	private Long id;
 	private String name;
-	private Point location;
-	private LocationType type;
-	
+	private Point geom;	
 }
