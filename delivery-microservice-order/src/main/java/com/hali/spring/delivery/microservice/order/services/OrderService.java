@@ -10,7 +10,7 @@ import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.hali.spring.delivery.microservice.order.config.StateMachineListener;
+import com.hali.spring.delivery.microservice.order.config.statemachine.OrderStateChangeInterceptor;
 import com.hali.spring.delivery.microservice.order.domain.Order;
 import com.hali.spring.delivery.microservice.order.domain.OrderEvent;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderService 
 {
 	public static final String ORDER_ID_HEADER = "order_id";
+	public static final String ORDER_PREPAID_HEADER = "order_pre_paid";
 
 	private final OrderRepository orderRepository;
 ////	private final StateMachineService<OrderState, OrderEvent> stateMachineService;
@@ -37,7 +38,14 @@ public class OrderService
 	{
 		Order savedOrder = orderRepository.save(order);
 		
-		sendEvent(savedOrder.getId(),OrderEvent.UNLOCK_DELIVERY);
+		//sendEvent(savedOrder.getId(),OrderEvent.ORDER_PLACED);
+		
+		Message<OrderEvent> msg = MessageBuilder.withPayload(OrderEvent.ORDER_PLACED).
+				setHeader(ORDER_ID_HEADER, savedOrder.getId()).
+				setHeader(ORDER_PREPAID_HEADER, savedOrder.isPrePaid())
+				.build();
+	
+		getStateMachine(savedOrder.getId()).sendEvent(msg);
 		
 		return savedOrder;
 	}
@@ -46,7 +54,8 @@ public class OrderService
 	{	
 		
 		Message<OrderEvent> msg = MessageBuilder.withPayload(event).
-					setHeader(ORDER_ID_HEADER, orderId).build();
+					setHeader(ORDER_ID_HEADER, orderId)
+					.build();
 		
 		getStateMachine(orderId).sendEvent(msg);
 	}

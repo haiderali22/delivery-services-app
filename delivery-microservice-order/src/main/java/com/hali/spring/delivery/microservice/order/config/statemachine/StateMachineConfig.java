@@ -1,4 +1,4 @@
-package com.hali.spring.delivery.microservice.order.config;
+package com.hali.spring.delivery.microservice.order.config.statemachine;
 
 import java.util.EnumSet;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +31,7 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 	
 	private final Action<OrderState, OrderEvent> paymentReceivedAction;
     private final Action<OrderState, OrderEvent> assignRiderAction;
+    private final Action<OrderState, OrderEvent> orderPlacedAction;
     private final Guard<OrderState, OrderEvent> paidGuard;
     private final StateMachineListenerAdapter<OrderState, OrderEvent> listenerAdaptor;
     
@@ -39,7 +40,7 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 	@Override
 	public void configure(StateMachineStateConfigurer<OrderState, OrderEvent> states) throws Exception 
 	{		
-		states.withStates().initial(OrderState.PLACED).states(EnumSet.allOf(OrderState.class))
+		states.withStates().initial(OrderState.NEW).states(EnumSet.allOf(OrderState.class))
 		.end(OrderState.CANCELED);
 	}
 
@@ -47,6 +48,12 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 	public void configure(StateMachineTransitionConfigurer<OrderState, OrderEvent> transitions) throws Exception
 	{
 		transitions
+			.withExternal()
+				.source(OrderState.NEW)
+				.event(OrderEvent.ORDER_PLACED)
+				.target(OrderState.PLACED)
+				.action(orderPlacedAction)
+		.and()
 			.withExternal()
 				.source(OrderState.PLACED)
 				.target(OrderState.READY_FOR_DELIVERY)

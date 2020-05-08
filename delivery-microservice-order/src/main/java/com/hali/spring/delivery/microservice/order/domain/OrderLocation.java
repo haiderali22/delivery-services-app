@@ -21,12 +21,13 @@ import lombok.Setter;
 
 @Setter
 @Getter
-//@Entity
-//@Table(name = "order_location")
+@Entity(name = "order_location")
+@Table(name = "order_location")
+//@Embeddable
 public class OrderLocation
 {
 	@Id
-	Long order_id;
+	Long id;
 	
 	@Embedded
 	@AttributeOverrides({

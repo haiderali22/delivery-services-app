@@ -9,5 +9,5 @@ import com.hali.spring.delivery.microservice.order.domain.OrderState;
 
 public interface OrderRepository extends JpaRepository<Order, Long> 
 {
-	//Page<Order> findByCurrentState(OrderState currentState, Pageable pageable);
+	Page<Order> findByCurrentState(OrderState currentState, Pageable pageable);
 }

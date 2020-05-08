@@ -1,4 +1,4 @@
-package com.hali.spring.delivery.microservice.order.services;
+package com.hali.spring.delivery.microservice.order.config.statemachine;
 
 import java.util.Optional;
 
@@ -8,11 +8,15 @@ import org.springframework.statemachine.state.State;
 import org.springframework.statemachine.support.StateMachineInterceptorAdapter;
 import org.springframework.statemachine.transition.Transition;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hali.spring.delivery.microservice.order.domain.Order;
 import com.hali.spring.delivery.microservice.order.domain.OrderEvent;
+import com.hali.spring.delivery.microservice.order.domain.OrderHistory;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
+import com.hali.spring.delivery.microservice.order.repositories.OrderHistoryRepository;
 import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
+import com.hali.spring.delivery.microservice.order.services.OrderService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,21 +25,36 @@ import lombok.RequiredArgsConstructor;
 public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<OrderState, OrderEvent> 
 {
 	private final OrderRepository orderRepository;
+	private final OrderHistoryRepository orderHistoryRepository;
 	
 	@Override
+	@Transactional
 	public void preStateChange(State<OrderState, OrderEvent> state, Message<OrderEvent> message,
 			Transition<OrderState, OrderEvent> transition, StateMachine<OrderState, OrderEvent> stateMachine) {
 		
 		Optional.ofNullable(message).ifPresent( msg -> {
 				Optional.ofNullable(Long.class.cast( msg.getHeaders().get(OrderService.ORDER_ID_HEADER)))
-				.ifPresent( paymentID -> {
-							Order order = orderRepository.getOne(paymentID);							
+				.ifPresent( orderID -> {
+							Order order = orderRepository.getOne(orderID);	
+							
+							OrderState previousState = order.getCurrentState();
+							
 							order.setCurrentState(state.getId());
 							
 							orderRepository.save(order);
+							
+							OrderHistory oHistory = new OrderHistory();
+							
+							oHistory.setCurrentState(state.getId());
+							oHistory.setPreviousState(previousState);
+							oHistory.setEvent(transition.getTrigger().getEvent());
+							
+							oHistory.setOrder(order);
+							
+							orderHistoryRepository.save(oHistory);
+							
 					});
 		});
 		
-		super.preStateChange(state, message, transition, stateMachine);
 	}
 }

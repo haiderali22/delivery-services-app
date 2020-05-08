@@ -1,4 +1,4 @@
-package com.hali.spring.delivery.microservice.order.config.guards;
+package com.hali.spring.delivery.microservice.order.config.statemachine;
 
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.guard.Guard;
