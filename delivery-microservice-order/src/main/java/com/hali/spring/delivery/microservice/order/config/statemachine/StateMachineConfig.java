@@ -32,7 +32,8 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 	private final Action<OrderState, OrderEvent> paymentReceivedAction;
     private final Action<OrderState, OrderEvent> assignRiderAction;
     private final Action<OrderState, OrderEvent> orderPlacedAction;
-    private final Guard<OrderState, OrderEvent> paidGuard;
+    private final Guard<OrderState, OrderEvent> isPaidGuard;
+    private final Guard<OrderState, OrderEvent> isPostPaidGuard;
     private final StateMachineListenerAdapter<OrderState, OrderEvent> listenerAdaptor;
     
 //    private final StateMachineRuntimePersister<OrderState, OrderEvent, String> stateMachineRuntimePersister;    
@@ -40,8 +41,10 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 	@Override
 	public void configure(StateMachineStateConfigurer<OrderState, OrderEvent> states) throws Exception 
 	{		
-		states.withStates().initial(OrderState.NEW).states(EnumSet.allOf(OrderState.class))
-		.end(OrderState.CANCELED);
+		states.withStates()		
+		.initial(OrderState.NEW).states(EnumSet.allOf(OrderState.class))
+		.end(OrderState.CANCELED)
+		.stateEntry(OrderState.PLACED, orderPlacedAction);
 	}
 
 	@Override
@@ -51,8 +54,7 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 			.withExternal()
 				.source(OrderState.NEW)
 				.event(OrderEvent.ORDER_PLACED)
-				.target(OrderState.PLACED)
-				.action(orderPlacedAction)
+				.target(OrderState.PLACED)			
 		.and()
 			.withExternal()
 				.source(OrderState.PLACED)
@@ -75,7 +77,7 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 			.withExternal()
 				.source(OrderState.SENT_FOR_DELIVERY)
 				.target(OrderState.AWAITING_PAYMENT)
-				.guard(not(paidGuard))
+				.guard(not(isPaidGuard))
 				.event(OrderEvent.DELIVER)
 		.and()
 			.withExternal()
@@ -88,7 +90,7 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 				.source(OrderState.SENT_FOR_DELIVERY)
 				.target(OrderState.COMPLETED)
 				.event(OrderEvent.DELIVER)
-				.guard(paidGuard)
+				.guard(isPaidGuard)
 		.and()
 			.withExternal()
 				.source(OrderState.SENT_FOR_DELIVERY)
@@ -104,7 +106,7 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 				.source(OrderState.COMPLETED)
 				.event(OrderEvent.REFUND)
 				.target(OrderState.PLACED)
-				.guard(paidGuard)
+				.guard(isPaidGuard)
 		.and()
 			.withExternal()
 					.source(OrderState.PLACED)

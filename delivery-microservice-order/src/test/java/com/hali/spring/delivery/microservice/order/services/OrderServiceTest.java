@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,18 +40,20 @@ class OrderServiceTest
 	{
 
 		order = new Order();
-		order.setCurrentState(OrderState.PLACED);
+		order.setCurrentState(OrderState.NEW);
 
 	}
 
 	@Test
 	@Transactional
 	void testNewOrder() throws Exception {
-		Order saved = service.newOrder(order);
+		Order saved = service.newOrder(order); // postpaid
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
-		System.out.println(fetchOrder.getCurrentState());
+		Assertions.assertEquals(OrderState.READY_FOR_DELIVERY, fetchOrder.getCurrentState());
+		
+		
 	}
 
 	@Test
@@ -63,7 +66,8 @@ class OrderServiceTest
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
-		System.out.println(fetchOrder.getCurrentState());
+		Assertions.assertEquals(OrderState.READY_FOR_DELIVERY, fetchOrder.getCurrentState());
+		
 	}
 
 	@Test
@@ -74,7 +78,8 @@ class OrderServiceTest
 		
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
-		System.out.println(fetchOrder.getCurrentState());
+
+		Assertions.assertEquals(OrderState.READY_FOR_DELIVERY, fetchOrder.getCurrentState());
 	}
 
 	@Test
@@ -85,7 +90,7 @@ class OrderServiceTest
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
-		System.out.println(fetchOrder.getCurrentState());
+		Assertions.assertEquals(OrderState.PLACED, fetchOrder.getCurrentState());
 	}
 
 	@Test
@@ -93,13 +98,14 @@ class OrderServiceTest
 	void testPickup() throws Exception {
 		Order saved = service.newOrder(order);
 
-		service.paymentReceived(saved.getId());
+//		service.paymentReceived(saved.getId());
 
 		service.orderRiderAssigned(saved.getId());
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
-		System.out.println(fetchOrder.getCurrentState());
+
+		Assertions.assertEquals(OrderState.SENT_FOR_DELIVERY, fetchOrder.getCurrentState());
 
 
 		List<OrderHistory> lst = orderHRepo.getAllByOrder(saved.getId());

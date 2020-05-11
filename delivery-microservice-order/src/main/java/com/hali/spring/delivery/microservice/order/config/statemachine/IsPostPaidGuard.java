@@ -1,24 +1,23 @@
 package com.hali.spring.delivery.microservice.order.config.statemachine;
 
-import org.springframework.statemachine.ExtendedState;
 import org.springframework.statemachine.StateContext;
-import org.springframework.statemachine.action.Action;
+import org.springframework.statemachine.guard.Guard;
 import org.springframework.stereotype.Component;
 
 import com.hali.spring.delivery.microservice.order.domain.OrderEvent;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
+import com.hali.spring.delivery.microservice.order.services.OrderService;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Component
 @Slf4j
-public class AssignRiderAction implements Action<OrderState, OrderEvent> 
+@Component
+public class IsPostPaidGuard implements Guard<OrderState, OrderEvent>  
 {
 	@Override
-	public void execute(StateContext<OrderState, OrderEvent> context) 
+	public boolean evaluate(StateContext<OrderState, OrderEvent> context) 
 	{
-		log.info("assign Rider paid");
-				
+		return (boolean) context.getMessageHeader(OrderService.ORDER_PREPAID_HEADER);
 	}
-	
+
 }
