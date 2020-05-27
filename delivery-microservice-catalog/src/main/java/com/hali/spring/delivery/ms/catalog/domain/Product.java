@@ -42,9 +42,7 @@ public class Product
 	
 	private String description;
 
-	private int quantity;
 
-	private Long price;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "products_categories", joinColumns = {

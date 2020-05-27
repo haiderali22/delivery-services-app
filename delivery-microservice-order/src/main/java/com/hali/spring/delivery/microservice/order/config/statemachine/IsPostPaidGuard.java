@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.hali.spring.delivery.microservice.order.domain.OrderEvent;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
+import com.hali.spring.delivery.microservice.order.services.OrderManager;
 import com.hali.spring.delivery.microservice.order.services.OrderService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ public class IsPostPaidGuard implements Guard<OrderState, OrderEvent>
 	@Override
 	public boolean evaluate(StateContext<OrderState, OrderEvent> context) 
 	{
-		return (boolean) context.getMessageHeader(OrderService.ORDER_PREPAID_HEADER);
+		return (boolean) context.getMessageHeader(OrderManager.ORDER_PREPAID_HEADER);
 	}
 
 }

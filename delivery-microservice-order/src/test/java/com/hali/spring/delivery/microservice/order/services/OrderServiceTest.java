@@ -19,6 +19,7 @@ import com.hali.spring.delivery.microservice.order.domain.OrderHistory;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
 import com.hali.spring.delivery.microservice.order.repositories.OrderHistoryRepository;
 import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
+import com.hali.spring.delivery.ms.model.OrderDTO;
 
 @SpringBootTest
 class OrderServiceTest 
@@ -33,21 +34,21 @@ class OrderServiceTest
 	@Autowired
 	OrderService service;
 
-	Order order;
+	OrderDTO order;
 
 	@BeforeEach
 	void setUp() throws Exception 
 	{
 
-		order = new Order();
-		order.setCurrentState(OrderState.NEW);
+		order = new OrderDTO();
+//		order.setCurrentState(OrderState.NEW);
 
 	}
 
 	@Test
 	@Transactional
 	void testNewOrder() throws Exception {
-		Order saved = service.newOrder(order); // postpaid
+		OrderDTO saved = service.newOrder(order); // postpaid
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
@@ -60,7 +61,7 @@ class OrderServiceTest
 	@Transactional
 	void testReceivePayment() throws Exception {
 		order.setPrePaid(true);
-		Order saved = service.newOrder(order);
+		OrderDTO saved = service.newOrder(order);
 
 		service.paymentReceived(saved.getId());
 
@@ -73,7 +74,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testPostPaid() throws Exception {
-		Order saved = service.newOrder(order);
+		OrderDTO saved = service.newOrder(order);
 
 		
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
@@ -86,7 +87,7 @@ class OrderServiceTest
 	@Transactional
 	void testPrePaid() throws Exception {
 		order.setPrePaid(true);
-		Order saved = service.newOrder(order);
+		OrderDTO saved = service.newOrder(order);
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
@@ -96,7 +97,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testPickup() throws Exception {
-		Order saved = service.newOrder(order);
+		OrderDTO saved = service.newOrder(order);
 
 //		service.paymentReceived(saved.getId());
 

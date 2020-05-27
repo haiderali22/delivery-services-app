@@ -61,4 +61,7 @@ public class Order extends Auditable<Long>
 
 	@Column(name = "prepaid")
 	private boolean prePaid;
+	
+	@OneToMany	
+	private List<OrderLine> orderLines;
 }

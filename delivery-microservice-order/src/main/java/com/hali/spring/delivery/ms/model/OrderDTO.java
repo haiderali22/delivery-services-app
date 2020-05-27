@@ -1,4 +1,4 @@
-package com.hali.spring.delivery.microservice.order.model;
+package com.hali.spring.delivery.ms.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +18,13 @@ import lombok.Setter;
 @Getter
 public class OrderDTO
 {
-	private OrderState currentState;
+	private String currentState;
 	
 	private Long referenceNumber;
 
-	
-//	private OrderLocation pickupLocation;
-//	
-//	
-//	private OrderLocation devliveryLocation;
-//	
-//	
-//	private List<ContactPerson> contacts = new ArrayList<>();	
+	private List<OrderLineDTO> orderLines;
+
+	private Long id;
+
+	private Boolean prePaid;
 }

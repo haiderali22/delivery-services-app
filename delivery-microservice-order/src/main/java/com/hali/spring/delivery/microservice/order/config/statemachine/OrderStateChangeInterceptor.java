@@ -16,6 +16,7 @@ import com.hali.spring.delivery.microservice.order.domain.OrderHistory;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
 import com.hali.spring.delivery.microservice.order.repositories.OrderHistoryRepository;
 import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
+import com.hali.spring.delivery.microservice.order.services.OrderManager;
 import com.hali.spring.delivery.microservice.order.services.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<
 			Transition<OrderState, OrderEvent> transition, StateMachine<OrderState, OrderEvent> stateMachine) {
 		
 		Optional.ofNullable(message).ifPresent( msg -> {
-				Optional.ofNullable(Long.class.cast( msg.getHeaders().get(OrderService.ORDER_ID_HEADER)))
+				Optional.ofNullable(Long.class.cast( msg.getHeaders().get(OrderManager.ORDER_ID_HEADER)))
 				.ifPresent( orderID -> {
 							Order order = orderRepository.getOne(orderID);	
 							
@@ -41,7 +42,7 @@ public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<
 							
 							order.setCurrentState(state.getId());
 							
-							orderRepository.save(order);
+							orderRepository.saveAndFlush(order);
 							
 							OrderHistory oHistory = new OrderHistory();
 							
