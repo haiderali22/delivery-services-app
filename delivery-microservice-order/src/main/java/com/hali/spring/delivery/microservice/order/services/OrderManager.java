@@ -6,12 +6,15 @@ import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hali.spring.delivery.microservice.order.config.statemachine.OrderStateChangeInterceptor;
 import com.hali.spring.delivery.microservice.order.domain.Order;
 import com.hali.spring.delivery.microservice.order.domain.OrderEvent;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
 import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
+import com.hali.spring.delivery.ms.model.events.OrderPaymentResponse;
+import com.hali.spring.delivery.ms.model.events.OrderValidateResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,37 +31,51 @@ public class OrderManager
 	private final StateMachineFactory<OrderState, OrderEvent> factory;
 	private final  OrderStateChangeInterceptor orderStateChangeInterceptor;
 
-	public Order placeOrder(Order order) 
+	@Transactional
+	public Order placeOrder(Order order)
 	{
-		Order savedOrder = orderRepository.save(order);
+		Order savedOrder = orderRepository.saveAndFlush(order);
 
 		//sendEvent(savedOrder.getId(),OrderEvent.ORDER_PLACED);
+//
+//		Message<OrderEvent> msg = MessageBuilder.withPayload(OrderEvent.VALIDATE_ORDER).
+//				setHeader(ORDER_ID_HEADER, savedOrder.getId()).
+//				setHeader(ORDER_PREPAID_HEADER, savedOrder.isPrePaid())
+//				.build();
 
-		Message<OrderEvent> msg = MessageBuilder.withPayload(OrderEvent.ORDER_PLACED).
-				setHeader(ORDER_ID_HEADER, savedOrder.getId()).
-				setHeader(ORDER_PREPAID_HEADER, savedOrder.isPrePaid())
-				.build();
-
-		getStateMachine(savedOrder.getId()).sendEvent(msg);
+		sendEvent(savedOrder,OrderEvent.VALIDATE_ORDER);
+		
 		return savedOrder;
 	}
 
-	private void sendEvent(Long orderId, OrderEvent event) throws Exception 
-	{	
-
+	private void sendEvent(Order order , 
+			OrderEvent event) 
+	{
 		Message<OrderEvent> msg = MessageBuilder.withPayload(event).
-				setHeader(ORDER_ID_HEADER, orderId)
+				setHeader(ORDER_ID_HEADER,  order.getId()).
+				setHeader(ORDER_PREPAID_HEADER, order.isPrePaid())
+				.build();
+
+		getStateMachine( order.getId()).sendEvent(msg);
+	}
+	
+	private void sendEvent(Long orderId , 
+			OrderEvent event)
+	{
+		Message<OrderEvent> msg = MessageBuilder.withPayload(event).
+				setHeader(ORDER_ID_HEADER,  orderId)
 				.build();
 
 		getStateMachine(orderId).sendEvent(msg);
 	}
 
-	public void paymentReceived(Long id) throws Exception {
-
+	public void paymentReceived(Long id )
+	{
 		sendEvent(id,OrderEvent.PAYMENT_RECEIVED);
 	}
 
-	public void orderRiderAssigned(Long id) throws Exception {
+	public void orderRiderAssigned(Long id) 
+	{
 		sendEvent(id,OrderEvent.RIDER_ASSIGNED);
 	}
 
@@ -80,6 +97,29 @@ public class OrderManager
 		sm.start();
 
 		return sm;
+	}
+
+	@Transactional
+	public void processValidationResponse(OrderValidateResponse response) throws Exception 
+	{
+		Order order = orderRepository.getOne(response.getOrderId());
+		
+		if(response.isValidated())
+			sendEvent(order,OrderEvent.VALIDATION_PASSED);
+		else
+			sendEvent(order.getId(),OrderEvent.VALIDATE_FAILED);
+		
+	}
+
+	@Transactional
+	public void processPaymentResponse(OrderPaymentResponse response) 
+	{
+		Order order = orderRepository.getOne(response.getOrderId());
+		
+		if(response.isRecevied())
+			sendEvent(order,OrderEvent.PAYMENT_RECEIVED);
+		else
+			sendEvent(order.getId(),OrderEvent.CANCEL);
 	}
 
 //	private synchronized StateMachine<OrderState, OrderEvent> getStateMachine(Long orderId) throws Exception 

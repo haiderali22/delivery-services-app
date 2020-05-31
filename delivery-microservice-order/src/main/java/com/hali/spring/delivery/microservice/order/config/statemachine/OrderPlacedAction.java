@@ -40,6 +40,16 @@ public class OrderPlacedAction implements Action<OrderState, OrderEvent>
 					
 					context.getStateMachine().sendEvent(omsg);
 				}
+				else
+				{
+					Message<OrderEvent> omsg = MessageBuilder.withPayload(OrderEvent.ORDER_PLACED).
+							setHeader(OrderManager.ORDER_ID_HEADER, 
+									Long.class.cast( msg.getHeaders().get(OrderManager.ORDER_ID_HEADER))).
+							setHeader(OrderManager.ORDER_PREPAID_HEADER, isPrePaid)
+							.build();
+					
+					context.getStateMachine().sendEvent(omsg);
+				}
 
 			});
 		});

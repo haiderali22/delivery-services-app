@@ -1,5 +1,7 @@
 package com.hali.spring.delivery.ms.model.events;
 
+import java.io.Serializable;
+
 import com.hali.spring.delivery.ms.model.OrderDTO;
 
 import lombok.AllArgsConstructor;
@@ -11,7 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderValidationRequest 
+public class OrderValidationRequest implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3613948632949550376L;
+	
 	private OrderDTO order;
 }

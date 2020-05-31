@@ -29,6 +29,7 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 {
 	public static final String PAID_EXTENDED_STATE_VARIABLE = "paid";
 	
+	private final Action<OrderState, OrderEvent> validateOrderAction;
 	private final Action<OrderState, OrderEvent> paymentReceivedAction;
     private final Action<OrderState, OrderEvent> assignRiderAction;
     private final Action<OrderState, OrderEvent> orderPlacedAction;
@@ -53,11 +54,27 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderS
 		transitions
 			.withExternal()
 				.source(OrderState.NEW)
-				.event(OrderEvent.ORDER_PLACED)
-				.target(OrderState.PLACED)			
+				.event(OrderEvent.VALIDATE_ORDER)
+				.target(OrderState.VALIDATION_PENDING)
+				.action(validateOrderAction)
+		.and()
+			.withExternal()
+				.source(OrderState.VALIDATION_PENDING)
+				.event(OrderEvent.VALIDATION_PASSED)
+				.target(OrderState.PLACED)
+		.and()
+			.withExternal()
+				.source(OrderState.VALIDATION_PENDING)
+				.event(OrderEvent.VALIDATE_FAILED)
+				.target(OrderState.VALIDATION_FAILED)
 		.and()
 			.withExternal()
 				.source(OrderState.PLACED)
+				.event(OrderEvent.ORDER_PLACED)
+				.target(OrderState.AWAITING_PAYMENT)
+		.and()
+			.withExternal()
+				.source(OrderState.AWAITING_PAYMENT)
 				.target(OrderState.READY_FOR_DELIVERY)
 				.event(OrderEvent.PAYMENT_RECEIVED)
 				.action(paymentReceivedAction)
