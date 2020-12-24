@@ -35,11 +35,13 @@ class OrderServiceTest
 	OrderService service;
 
 	OrderDTO order;
+	
+	String cartId;
 
 	@BeforeEach
 	void setUp() throws Exception 
 	{
-
+		cartId = "123456";
 		order = new OrderDTO();
 //		order.setCurrentState(OrderState.NEW);
 
@@ -48,7 +50,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testNewOrder() throws Exception {
-		OrderDTO saved = service.newOrder(order); // postpaid
+		OrderDTO saved = service.createOrder(cartId); // postpaid
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
@@ -61,7 +63,7 @@ class OrderServiceTest
 	@Transactional
 	void testReceivePayment() throws Exception {
 		order.setPrePaid(true);
-		OrderDTO saved = service.newOrder(order);
+		OrderDTO saved = service.createOrder(cartId);
 
 		service.paymentReceived(saved.getId());
 
@@ -74,7 +76,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testPostPaid() throws Exception {
-		OrderDTO saved = service.newOrder(order);
+		OrderDTO saved = service.createOrder(cartId);
 
 		
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
@@ -87,7 +89,7 @@ class OrderServiceTest
 	@Transactional
 	void testPrePaid() throws Exception {
 		order.setPrePaid(true);
-		OrderDTO saved = service.newOrder(order);
+		OrderDTO saved = service.createOrder(cartId);
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
@@ -97,7 +99,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testPickup() throws Exception {
-		OrderDTO saved = service.newOrder(order);
+		OrderDTO saved = service.createOrder(cartId);
 
 //		service.paymentReceived(saved.getId());
 

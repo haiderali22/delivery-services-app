@@ -76,6 +76,8 @@ public class OrderServiceIT
 	OrderRepository orderRepo;
 	
 	OrderDTO order;
+	
+	String cartId;
 
 	//	private KafkaMessageListenerContainer<String, Object> container;
 	//
@@ -84,6 +86,7 @@ public class OrderServiceIT
 	@BeforeEach
 	void setUp() throws Exception 
 	{
+		cartId  = "1234456";
 //		 System.setProperty("spring.kafka.bootstrap-servers", embeddedKafkaBroker.getBrokersAsString());
 		order = new OrderDTO();
 //		order.setCurrentState(OrderState.NEW);
@@ -136,7 +139,7 @@ public class OrderServiceIT
 //		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				123,  objMapper.writeValueAsString(resp)));
 		
-		OrderDTO saved = service.newOrder(order);
+		OrderDTO saved = service.createOrder(cartId);;
 
 		ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
 				CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
@@ -170,7 +173,7 @@ public class OrderServiceIT
 //		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				123,  objMapper.writeValueAsString(resp)));
 		
-		OrderDTO saved = service.newOrder(order);
+		OrderDTO saved = service.createOrder(cartId);;
 		
 		OrderValidateResponse resp = OrderValidateResponse.builder().
 				OrderId(saved.getId()).validated(false).build();				
@@ -208,7 +211,7 @@ public class OrderServiceIT
 	{		
 						
 		
-		OrderDTO saved = service.newOrder(order);
+		OrderDTO saved = service.createOrder(cartId);;
 		Producer<Integer, Object> producer = configureProducer();
 
 		OrderValidateResponse resp = OrderValidateResponse.builder()
@@ -232,7 +235,7 @@ public class OrderServiceIT
 	{		
 		order.setPrePaid(true);		
 		
-		OrderDTO saved = service.newOrder(order);
+		OrderDTO saved = service.createOrder(cartId);;
 		Producer<Integer, Object> producer = configureProducer();
 		
 		OrderValidateResponse resp = OrderValidateResponse.builder().

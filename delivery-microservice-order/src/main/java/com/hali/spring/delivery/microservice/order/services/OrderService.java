@@ -1,5 +1,8 @@
 package com.hali.spring.delivery.microservice.order.services;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
@@ -11,12 +14,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.hali.spring.delivery.microservice.order.config.statemachine.OrderStateChangeInterceptor;
+import com.hali.spring.delivery.microservice.order.domain.Item;
 import com.hali.spring.delivery.microservice.order.domain.Order;
 import com.hali.spring.delivery.microservice.order.domain.OrderEvent;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
+import com.hali.spring.delivery.microservice.order.domain.User;
 import com.hali.spring.delivery.microservice.order.mapper.OrderMapper;
 import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
+import com.hali.spring.delivery.microservice.order.restclient.UserClient;
 import com.hali.spring.delivery.ms.model.OrderDTO;
+import com.hali.spring.delivery.ms.model.OrderException;
+import com.hali.spring.delivery.ms.order.utils.OrderUtilities;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,21 +47,38 @@ public class OrderService
 	
 	private final OrderManager orderManager;
 	private final OrderMapper orderMapper;
+	private final CartService cartService;
+	private final UserClient userClient;
 
-	public OrderDTO newOrder(OrderDTO orderDto) throws Exception
+	public OrderDTO createOrder(String cartId) throws OrderException
 	{
-		Order order = orderMapper.fromDTO(orderDto);
+		List<Item> cart = cartService.getCart(cartId);
 		
-		order.setId(null);
-		order.setCurrentState(OrderState.NEW);
+		String userId = ""; //TODO: get id of current user  
 		
-		Order savedOrder = orderManager.placeOrder(order);
-		
-		
-		
-		return orderMapper.toDTO(savedOrder);
+	    User user = userClient.getUserById(userId);   
+	    
+	    if(cart != null && user != null) {
+	    	Order order = this.createOrder(cart, user);
+	    	
+	    	Order savedOrder = orderManager.placeOrder(order);
+	    	return orderMapper.toDTO(savedOrder);
+	    }
+	    else
+	    {
+	    	throw new OrderException("Error in creating order");
+	    }
 	}
 	
+	 private Order createOrder(List<Item> cart, User user) {
+	        Order order = new Order();
+	        order.setItems(cart);
+	        order.setUser(user);
+	        order.setTotal(OrderUtilities.countTotalPrice(cart));
+	        order.setOrderedDate(LocalDate.now());
+	        order.setCurrentState(OrderState.NEW);
+	        return order;
+	    }
 	
 
 	public void paymentReceived(Long id) throws Exception {
