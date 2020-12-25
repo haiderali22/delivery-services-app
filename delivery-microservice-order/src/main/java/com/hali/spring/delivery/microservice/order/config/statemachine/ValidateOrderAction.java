@@ -45,7 +45,7 @@ public class ValidateOrderAction implements Action<OrderState, OrderEvent>
 				if(order.isPresent())
 				{
 					OrderValidationRequest req = OrderValidationRequest.builder().
-							order(mapper.toDTO(order.get())).build();
+							order(mapper.map(order.get())).build();
 					try {
 						template.send(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST,
 								objMapper.writeValueAsString(req));

@@ -9,15 +9,16 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.hali.spring.delivery.microservice.order.domain.Item;
+import com.hali.spring.delivery.ms.model.ItemDto;
 
 @Configuration
 public class RedisConfig 
 {
 	@Bean
 	@Primary
-	RedisTemplate<String, Item> redisTemplate(RedisConnectionFactory rcf) {
+	RedisTemplate<String, ItemDto> redisTemplate(RedisConnectionFactory rcf) {
 
-		RedisTemplate<String, Item> template = new RedisTemplate<>();
+		RedisTemplate<String, ItemDto> template = new RedisTemplate<>();
 		template.setConnectionFactory(rcf);
 		template.setKeySerializer(new StringRedisSerializer());
 		template.setValueSerializer(new GenericJackson2JsonRedisSerializer());

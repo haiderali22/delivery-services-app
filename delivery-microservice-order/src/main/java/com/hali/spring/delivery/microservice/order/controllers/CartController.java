@@ -1,6 +1,7 @@
 package com.hali.spring.delivery.microservice.order.controllers;
 
-import org.springframework.data.redis.core.RedisTemplate;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,20 +10,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hali.spring.delivery.microservice.order.services.CartService;
+import com.hali.spring.delivery.ms.model.ItemDto;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController(value = "/cart")
+@RestController(value = "api/order/cart")
 @RequiredArgsConstructor
 public class CartController
 {
 	private final CartService cartService;
 	
 	@GetMapping("/{cartId}")
-	public void getCart(String cartId)
+	public List<ItemDto> getCart(String cartId)
 	{
-		cartService.getCart(cartId);
-		
+		return cartService.getCart(cartId);		
 	}	
 	
 	 @PostMapping(value = "/{cartId}", params = {"productId", "quantity"})
@@ -32,7 +33,7 @@ public class CartController
 		 cartService.addItemToCart(cartId,productId,quantity);
 	 }
 	 
-	 @DeleteMapping(value = "/{cartId}", params = {"productId", "quantity"})
+	 @DeleteMapping(value = "/{cartId}", params = {"productId"})
 	 public void removeItemFromCart(@PathVariable("cartId") String cartId , 
 			 @RequestParam("productId") Long productId)
 	 {

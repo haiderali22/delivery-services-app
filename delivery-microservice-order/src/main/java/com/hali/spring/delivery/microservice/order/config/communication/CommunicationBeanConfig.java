@@ -18,7 +18,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
-@Configuration
+//@Configuration
 public class CommunicationBeanConfig
 {
 	public static final String ORDER_VALIDATE_QUEUE_REQUEST = "order-validate-request";
@@ -26,7 +26,7 @@ public class CommunicationBeanConfig
 	public static final String ORDER_PAYMENT_QUEUE_REQUEST = "order-payment-request";
 	public static final String ORDER_PAYMENT_QUEUE_RESPONSE = "order-payment-response";
 	
-	@Value("${spring.kafka.bootstrap-servers}")
+	//@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapAddress;
 
 	//	@Bean

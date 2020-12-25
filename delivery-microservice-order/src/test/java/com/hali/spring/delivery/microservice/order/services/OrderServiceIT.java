@@ -19,7 +19,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.awaitility.Awaitility;
-import org.awaitility.Duration;
+import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -48,7 +48,7 @@ import com.hali.spring.delivery.microservice.order.config.communication.Communic
 import com.hali.spring.delivery.microservice.order.domain.Order;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
 import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
-import com.hali.spring.delivery.ms.model.OrderDTO;
+import com.hali.spring.delivery.ms.model.OrderDto;
 import com.hali.spring.delivery.ms.model.events.OrderPaymentResponse;
 import com.hali.spring.delivery.ms.model.events.OrderValidateResponse;
 
@@ -75,7 +75,7 @@ public class OrderServiceIT
 	@Autowired
 	OrderRepository orderRepo;
 	
-	OrderDTO order;
+	OrderDto order;
 	
 	String cartId;
 
@@ -88,7 +88,7 @@ public class OrderServiceIT
 	{
 		cartId  = "1234456";
 //		 System.setProperty("spring.kafka.bootstrap-servers", embeddedKafkaBroker.getBrokersAsString());
-		order = new OrderDTO();
+		order = new OrderDto();
 //		order.setCurrentState(OrderState.NEW);
 
 	}
@@ -139,7 +139,7 @@ public class OrderServiceIT
 //		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				123,  objMapper.writeValueAsString(resp)));
 		
-		OrderDTO saved = service.createOrder(cartId);;
+		OrderDto saved = service.createOrder(cartId);;
 
 		ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
 				CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
@@ -173,7 +173,7 @@ public class OrderServiceIT
 //		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				123,  objMapper.writeValueAsString(resp)));
 		
-		OrderDTO saved = service.createOrder(cartId);;
+		OrderDto saved = service.createOrder(cartId);;
 		
 		OrderValidateResponse resp = OrderValidateResponse.builder().
 				OrderId(saved.getId()).validated(false).build();				
@@ -196,7 +196,7 @@ public class OrderServiceIT
 		
 		
 		
-		Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(()->{
+		Awaitility.await().atMost(Durations.FIVE_SECONDS).untilAsserted(()->{
 			Order fetchOrder =  orderRepo.findById(saved.getId()).get();
 
 			Assertions.assertEquals(OrderState.VALIDATION_FAILED, fetchOrder.getCurrentState());
@@ -211,7 +211,7 @@ public class OrderServiceIT
 	{		
 						
 		
-		OrderDTO saved = service.createOrder(cartId);;
+		OrderDto saved = service.createOrder(cartId);;
 		Producer<Integer, Object> producer = configureProducer();
 
 		OrderValidateResponse resp = OrderValidateResponse.builder()
@@ -221,7 +221,7 @@ public class OrderServiceIT
 		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE, 
 				123,  resp));		
 		
-		Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(()->{
+		Awaitility.await().atMost(Durations.FIVE_SECONDS).untilAsserted(()->{
 			Order fetchOrder =  orderRepo.findById(saved.getId()).get();
 
 			Assertions.assertEquals(OrderState.READY_FOR_DELIVERY, fetchOrder.getCurrentState());
@@ -235,7 +235,7 @@ public class OrderServiceIT
 	{		
 		order.setPrePaid(true);		
 		
-		OrderDTO saved = service.createOrder(cartId);;
+		OrderDto saved = service.createOrder(cartId);;
 		Producer<Integer, Object> producer = configureProducer();
 		
 		OrderValidateResponse resp = OrderValidateResponse.builder().
@@ -244,7 +244,7 @@ public class OrderServiceIT
 		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE, 
 				123,  resp));
 		
-		Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(()->{
+		Awaitility.await().atMost(Durations.FIVE_SECONDS).untilAsserted(()->{
 			Order fetchOrder =  orderRepo.findById(saved.getId()).get();
 
 			Assertions.assertEquals(OrderState.AWAITING_PAYMENT, fetchOrder.getCurrentState());
@@ -256,7 +256,7 @@ public class OrderServiceIT
 		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_PAYMENT_QUEUE_RESPONSE, 
 				123,  payRes));		
 		
-		Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(()->{
+		Awaitility.await().atMost(Durations.FIVE_SECONDS).untilAsserted(()->{
 			Order fetchOrder =  orderRepo.findById(saved.getId()).get();
 
 			Assertions.assertEquals(OrderState.READY_FOR_DELIVERY, fetchOrder.getCurrentState());

@@ -1,10 +1,16 @@
 package com.hali.spring.delivery.microservice.order.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 @Entity
 @Table (name = "users")
+@Setter
+@Getter
 public class User {
 
     @Id

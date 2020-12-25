@@ -19,7 +19,7 @@ import com.hali.spring.delivery.microservice.order.domain.OrderHistory;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
 import com.hali.spring.delivery.microservice.order.repositories.OrderHistoryRepository;
 import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
-import com.hali.spring.delivery.ms.model.OrderDTO;
+import com.hali.spring.delivery.ms.model.OrderDto;
 
 @SpringBootTest
 class OrderServiceTest 
@@ -34,7 +34,7 @@ class OrderServiceTest
 	@Autowired
 	OrderService service;
 
-	OrderDTO order;
+	OrderDto order;
 	
 	String cartId;
 
@@ -42,7 +42,7 @@ class OrderServiceTest
 	void setUp() throws Exception 
 	{
 		cartId = "123456";
-		order = new OrderDTO();
+		order = new OrderDto();
 //		order.setCurrentState(OrderState.NEW);
 
 	}
@@ -50,7 +50,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testNewOrder() throws Exception {
-		OrderDTO saved = service.createOrder(cartId); // postpaid
+		OrderDto saved = service.createOrder(cartId); // postpaid
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
@@ -63,7 +63,7 @@ class OrderServiceTest
 	@Transactional
 	void testReceivePayment() throws Exception {
 		order.setPrePaid(true);
-		OrderDTO saved = service.createOrder(cartId);
+		OrderDto saved = service.createOrder(cartId);
 
 		service.paymentReceived(saved.getId());
 
@@ -76,7 +76,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testPostPaid() throws Exception {
-		OrderDTO saved = service.createOrder(cartId);
+		OrderDto saved = service.createOrder(cartId);
 
 		
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
@@ -89,7 +89,7 @@ class OrderServiceTest
 	@Transactional
 	void testPrePaid() throws Exception {
 		order.setPrePaid(true);
-		OrderDTO saved = service.createOrder(cartId);
+		OrderDto saved = service.createOrder(cartId);
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
@@ -99,7 +99,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testPickup() throws Exception {
-		OrderDTO saved = service.createOrder(cartId);
+		OrderDto saved = service.createOrder(cartId);
 
 //		service.paymentReceived(saved.getId());
 

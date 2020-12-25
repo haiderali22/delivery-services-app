@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.hali.spring.delivery.microservice.order.domain.Item;
-import com.hali.spring.delivery.microservice.order.domain.Product;
 import com.hali.spring.delivery.microservice.order.restclient.ProductClient;
+import com.hali.spring.delivery.ms.model.ItemDto;
+import com.hali.spring.delivery.ms.model.ProductDto;
 import com.hali.spring.delivery.ms.order.utils.CartUtilities;
 
 import lombok.RequiredArgsConstructor;
@@ -16,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CartService {
 
-	private final RedisTemplate<String, Item> redisTemplate;
+	private final RedisTemplate<String, ItemDto> redisTemplate;
 	private final ProductClient productClient;
 
-	public List<Item>  getCart(String cartId) 
+	public List<ItemDto>  getCart(String cartId) 
 	{
 		Long size = redisTemplate.opsForList().size(cartId);
 
@@ -28,15 +28,16 @@ public class CartService {
 
 	public void addItemToCart(String cartId, Long productId, Integer quantity) 
 	{
-		Product product = productClient.getProductById(productId);
-		Item item = new Item(quantity,product, CartUtilities.getSubTotalForItem(product,quantity));
+		ProductDto product = productClient.getProductById(productId);
+		ItemDto item = new ItemDto(quantity, product, CartUtilities.getSubTotalForItem(product,quantity));
+		
 		redisTemplate.opsForList().rightPush(cartId, item);
 	}
 
 	public void changeItemQuantity(String cartId, Long productId, Integer quantity) {
-		List<Item> cart = getCart(cartId);
+		List<ItemDto> cart = getCart(cartId);
 
-		for(Item item : cart){
+		for(ItemDto item : cart){
 			if((item.getProduct().getId()).equals(productId)){
 				redisTemplate.opsForList().remove(cartId, 0, item);                
 				item.setQuantity(quantity);
@@ -51,9 +52,9 @@ public class CartService {
 	}
 
 	public void removeItemFromCart(String cartId, Long productId) {
-		List<Item> cart = getCart(cartId);
+		List<ItemDto> cart = getCart(cartId);
 
-		for(Item item : cart){
+		for(ItemDto item : cart){
 			if((item.getProduct().getId()).equals(productId)){
 				redisTemplate.opsForList().remove(cartId, 0, item);	               
 			}
@@ -61,8 +62,8 @@ public class CartService {
 	}
 
 	public boolean checkIfItemIsExist(String cartId, Long productId) {
-		List<Item> cart = getCart(cartId);
-		for(Item item : cart){
+		List<ItemDto> cart = getCart(cartId);
+		for(ItemDto item : cart){
 			if((item.getProduct().getId()).equals(productId)){
 				return true;
 			}

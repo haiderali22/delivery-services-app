@@ -2,6 +2,7 @@ package com.hali.spring.delivery.microservice.order.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -19,10 +20,12 @@ import com.hali.spring.delivery.microservice.order.domain.Order;
 import com.hali.spring.delivery.microservice.order.domain.OrderEvent;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
 import com.hali.spring.delivery.microservice.order.domain.User;
+import com.hali.spring.delivery.microservice.order.mapper.ItemMapper;
 import com.hali.spring.delivery.microservice.order.mapper.OrderMapper;
 import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
 import com.hali.spring.delivery.microservice.order.restclient.UserClient;
-import com.hali.spring.delivery.ms.model.OrderDTO;
+import com.hali.spring.delivery.ms.model.ItemDto;
+import com.hali.spring.delivery.ms.model.OrderDto;
 import com.hali.spring.delivery.ms.model.OrderException;
 import com.hali.spring.delivery.ms.order.utils.OrderUtilities;
 
@@ -47,22 +50,25 @@ public class OrderService
 	
 	private final OrderManager orderManager;
 	private final OrderMapper orderMapper;
+	private final ItemMapper itemMapper;
 	private final CartService cartService;
 	private final UserClient userClient;
 
-	public OrderDTO createOrder(String cartId) throws OrderException
+	public OrderDto createOrder(String cartId) throws OrderException
 	{
-		List<Item> cart = cartService.getCart(cartId);
+		List<ItemDto> cart = cartService.getCart(cartId);
 		
 		String userId = ""; //TODO: get id of current user  
 		
-	    User user = userClient.getUserById(userId);   
+	    User user = new User();  
+	    user.setId(1L);
+	    //userClient.getUserById(userId);   
 	    
 	    if(cart != null && user != null) {
 	    	Order order = this.createOrder(cart, user);
 	    	
 	    	Order savedOrder = orderManager.placeOrder(order);
-	    	return orderMapper.toDTO(savedOrder);
+	    	return orderMapper.map(savedOrder);
 	    }
 	    else
 	    {
@@ -70,9 +76,9 @@ public class OrderService
 	    }
 	}
 	
-	 private Order createOrder(List<Item> cart, User user) {
+	 private Order createOrder(List<ItemDto> cart, User user) {
 	        Order order = new Order();
-	        order.setItems(cart);
+	        order.setItems(cart.stream().map(itemMapper::map).collect(Collectors.toList()));
 	        order.setUser(user);
 	        order.setTotal(OrderUtilities.countTotalPrice(cart));
 	        order.setOrderedDate(LocalDate.now());
