@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.hali.spring.delivery.ms.model.ProductDto;
 
-@FeignClient(name = "product-catalog-service", url = "http://localhost:8810/")
+@FeignClient(name = "product-catalog-service")
 public interface ProductClient {
-	@GetMapping(value = "/api/products/{id}")
+	@GetMapping(value = "/api/product/{id}")
 	public ProductDto getProductById(@PathVariable(value = "id") Long productId);
 }
