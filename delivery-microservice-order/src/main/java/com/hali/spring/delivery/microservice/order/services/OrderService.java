@@ -54,20 +54,20 @@ public class OrderService
 	private final CartService cartService;
 	private final UserClient userClient;
 
-	public OrderDto createOrder(String cartId) throws OrderException
+	public OrderDto createOrder(String cartId,OrderDto order) throws OrderException
 	{
 		List<ItemDto> cart = cartService.getCart(cartId);
 		
-		String userId = ""; //TODO: get id of current user  
+		String user = "1"; //TODO: get id of current user  
 		
-	    User user = new User();  
-	    user.setId(1L);
-	    //userClient.getUserById(userId);   
+//	    User user = new User(); 
+//	    user.setId(1L);
+	    //User user = userClient.getUserById(userId);
 	    
 	    if(cart != null && user != null) {
-	    	Order order = this.createOrder(cart, user);
+	    	Order createdOrder = this.createOrder(cart, user , order);
 	    	
-	    	Order savedOrder = orderManager.placeOrder(order);
+	    	Order savedOrder = orderManager.placeOrder(createdOrder);
 	    	return orderMapper.map(savedOrder);
 	    }
 	    else
@@ -76,8 +76,20 @@ public class OrderService
 	    }
 	}
 	
-	 private Order createOrder(List<ItemDto> cart, User user) {
-	        Order order = new Order();
+//	 private Order createOrder(List<ItemDto> cart, User user, OrderDto orderDto) {
+//	        Order order = orderMapper.map(orderDto);
+//	        
+//	        order.setItems(cart.stream().map(itemMapper::map).collect(Collectors.toList()));
+//	        order.setUser(user);
+//	        order.setTotal(OrderUtilities.countTotalPrice(cart));
+//	        order.setOrderedDate(LocalDate.now());
+//	        order.setCurrentState(OrderState.NEW);
+//	        return order;
+//	    }
+	 
+	 private Order createOrder(List<ItemDto> cart, String user, OrderDto orderDto) {
+	        Order order = orderMapper.map(orderDto);
+	        
 	        order.setItems(cart.stream().map(itemMapper::map).collect(Collectors.toList()));
 	        order.setUser(user);
 	        order.setTotal(OrderUtilities.countTotalPrice(cart));

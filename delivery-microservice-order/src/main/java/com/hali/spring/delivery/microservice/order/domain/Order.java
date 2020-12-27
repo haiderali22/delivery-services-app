@@ -2,13 +2,13 @@ package com.hali.spring.delivery.microservice.order.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -20,8 +20,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -46,22 +44,25 @@ public class Order extends Auditable<Long>
 	@Column(name = "current_state")
 	private OrderState currentState;
 
-	private Long referenceNumber;
+	private String referenceNumber;
 
-	@OneToOne(orphanRemoval = false)
-	@PrimaryKeyJoinColumn
-	private OrderLocation pickupLocation;
 
-	@OneToOne
-	@PrimaryKeyJoinColumn
-	private OrderLocation devliveryLocation;
+	@Embedded
+	@AttributeOverrides({
+		  @AttributeOverride( name = "location", column = @Column(name = "pickup_location")),
+		  @AttributeOverride( name = "address", column = @Column(name = "pickup_address")),
+		  @AttributeOverride( name = "systemGenerated", column = @Column(name = "pickup_address_manual"))
+		})
+	private Location pickupLocation;
 
-	@ElementCollection
-	@CollectionTable(
-			name="ContactPerson",
-			joinColumns = @JoinColumn(name="id")
-			)
-	private List<ContactPerson> contacts = new ArrayList<>();	
+	@Embedded
+	@AttributeOverrides({
+		  @AttributeOverride( name = "location", column = @Column(name = "delivery_location")),
+		  @AttributeOverride( name = "address" , column = @Column(name = "delivery_addres" )  ),
+		  @AttributeOverride( name = "systemGenerated", column = @Column(name = "delivery_address_manual"))
+		})
+	private Location deliveryLocation;	
+	
 
 	@Column(name = "prepaid")
 	private boolean prePaid;
@@ -70,9 +71,10 @@ public class Order extends Auditable<Long>
 	@JoinTable (name = "cart" , joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn (name = "item_id"))
 	private List<Item> items;
 
-	@ManyToOne (cascade = CascadeType.ALL)
-	@JoinColumn (name = "user_id")
-	private User user;
+//	@ManyToOne (cascade = CascadeType.ALL) TODO: populate user
+//	@JoinColumn (name = "user_id")
+//	private User user;
+	private String user;
 
 
 	@Column (name = "ordered_date")

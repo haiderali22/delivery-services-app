@@ -58,9 +58,7 @@ class CartControllerIT {
 		product2.setPrice(new BigDecimal(400));
 		product2.setProductName("PROD2");
 		product2.setId(2L);
-		
-		
-		
+			
 		stubFor(WireMock.get("/api/product/" + productId)
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -94,7 +92,7 @@ class CartControllerIT {
 		mockMvc.perform(post("/api/order/cart/{cartID}", cartId ).param("productId", "2").param("quantity", "4"))
 		.andExpect(status().isOk());
 		
-		MvcResult result =  mockMvc.perform(get("/api/order/cart/{cartID}", cartId ))		
+		MvcResult result =  mockMvc.perform(get("/api/order/cart/{cartID}", cartId ))
 		.andExpect(status().isOk()).andReturn();
 		
 		ObjectMapper mapper = new ObjectMapper();

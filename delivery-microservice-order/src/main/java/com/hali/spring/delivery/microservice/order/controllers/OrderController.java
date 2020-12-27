@@ -1,6 +1,8 @@
 package com.hali.spring.delivery.microservice.order.controllers;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,9 +20,10 @@ public class OrderController
 	private final OrderService orderService;
 	
 	@PostMapping("/{cartId}")
-	public OrderDto createOrder(String cartId) throws OrderException
+	public OrderDto createOrder(@PathVariable("cartId")  String cartId,
+		@RequestBody OrderDto order) throws OrderException
 	{
-		return orderService.createOrder(cartId);
+		return orderService.createOrder(cartId, order);
 	}
 }
 

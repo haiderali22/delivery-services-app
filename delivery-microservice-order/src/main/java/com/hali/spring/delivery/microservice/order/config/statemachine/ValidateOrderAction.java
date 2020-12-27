@@ -33,30 +33,24 @@ public class ValidateOrderAction implements Action<OrderState, OrderEvent>
 	private final ObjectMapper objMapper;
 
 	@Override
-	public void execute(StateContext<OrderState, OrderEvent> context) 
-	{
-
+	public void execute(StateContext<OrderState, OrderEvent> context) {
 		Optional.ofNullable(context.getMessage()).ifPresent( msg -> {
 			Optional.ofNullable(Long.class.cast( msg.getHeaders().get(OrderManager.ORDER_ID_HEADER)))
 			.ifPresent( orderId -> {
-
 				Optional<Order> order =  orderRepository.findById(orderId);
 
-				if(order.isPresent())
-				{
+				if(order.isPresent()){
 					OrderValidationRequest req = OrderValidationRequest.builder().
 							order(mapper.map(order.get())).build();
 					try {
 						template.send(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST,
 								objMapper.writeValueAsString(req));
 					} catch (JsonProcessingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error("error parsing request",e);
 					}
-//							MessageBuilder.withPayload(req).build());
+					//MessageBuilder.withPayload(req).build());
 				}
-				else
-				{
+				else{
 					log.error("Order Not Found. Id: " + orderId);
 				}
 

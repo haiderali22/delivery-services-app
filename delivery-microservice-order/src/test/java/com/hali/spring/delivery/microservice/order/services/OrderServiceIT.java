@@ -139,7 +139,7 @@ public class OrderServiceIT
 //		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				123,  objMapper.writeValueAsString(resp)));
 		
-		OrderDto saved = service.createOrder(cartId);;
+		OrderDto saved = service.createOrder(cartId, order);
 
 		ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
 				CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
@@ -173,7 +173,7 @@ public class OrderServiceIT
 //		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				123,  objMapper.writeValueAsString(resp)));
 		
-		OrderDto saved = service.createOrder(cartId);;
+		OrderDto saved = service.createOrder(cartId, order);
 		
 		OrderValidateResponse resp = OrderValidateResponse.builder().
 				OrderId(saved.getId()).validated(false).build();				
@@ -211,7 +211,7 @@ public class OrderServiceIT
 	{		
 						
 		
-		OrderDto saved = service.createOrder(cartId);;
+		OrderDto saved = service.createOrder(cartId, order);
 		Producer<Integer, Object> producer = configureProducer();
 
 		OrderValidateResponse resp = OrderValidateResponse.builder()
@@ -235,7 +235,7 @@ public class OrderServiceIT
 	{		
 		order.setPrePaid(true);		
 		
-		OrderDto saved = service.createOrder(cartId);;
+		OrderDto saved = service.createOrder(cartId, order);
 		Producer<Integer, Object> producer = configureProducer();
 		
 		OrderValidateResponse resp = OrderValidateResponse.builder().

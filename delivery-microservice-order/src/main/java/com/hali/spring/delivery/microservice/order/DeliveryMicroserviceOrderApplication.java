@@ -7,9 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableFeignClients
 public class DeliveryMicroserviceOrderApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(DeliveryMicroserviceOrderApplication.class, args);
 	}
-
 }

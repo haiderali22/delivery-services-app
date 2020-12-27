@@ -1,15 +1,8 @@
 package com.hali.spring.delivery.ms.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
-import com.hali.spring.delivery.microservice.order.domain.OrderState;
+import org.springframework.data.geo.Point;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +13,17 @@ public class OrderDto
 {
 	private String currentState;
 	
-	private Long referenceNumber;
+	private String referenceNumber;
+	
+	private Point pickupLocation;
+	private String pickupAddress;
+	private boolean pickupAddressType;
+	
+	private Point deliveryLocation;
+	private String deliveryAddress;
+	private boolean deliveryAddressType;
 
-	private List<ItemDto> orderLines;
+	private List<ItemDto> items;
 
 	private Long id;
 

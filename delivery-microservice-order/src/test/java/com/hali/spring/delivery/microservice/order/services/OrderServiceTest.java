@@ -1,7 +1,5 @@
 package com.hali.spring.delivery.microservice.order.services;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -9,12 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.statemachine.StateMachinePersist;
-import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hali.spring.delivery.microservice.order.domain.Order;
-import com.hali.spring.delivery.microservice.order.domain.OrderEvent;
 import com.hali.spring.delivery.microservice.order.domain.OrderHistory;
 import com.hali.spring.delivery.microservice.order.domain.OrderState;
 import com.hali.spring.delivery.microservice.order.repositories.OrderHistoryRepository;
@@ -50,7 +45,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testNewOrder() throws Exception {
-		OrderDto saved = service.createOrder(cartId); // postpaid
+		OrderDto saved = service.createOrder(cartId, order); // postpaid
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
@@ -63,7 +58,7 @@ class OrderServiceTest
 	@Transactional
 	void testReceivePayment() throws Exception {
 		order.setPrePaid(true);
-		OrderDto saved = service.createOrder(cartId);
+		OrderDto saved = service.createOrder(cartId, order);
 
 		service.paymentReceived(saved.getId());
 
@@ -76,7 +71,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testPostPaid() throws Exception {
-		OrderDto saved = service.createOrder(cartId);
+		OrderDto saved = service.createOrder(cartId, order);
 
 		
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
@@ -89,7 +84,7 @@ class OrderServiceTest
 	@Transactional
 	void testPrePaid() throws Exception {
 		order.setPrePaid(true);
-		OrderDto saved = service.createOrder(cartId);
+		OrderDto saved = service.createOrder(cartId, order);
 
 		Order fetchOrder =  orderRepo.getOne(saved.getId());
 
@@ -99,7 +94,7 @@ class OrderServiceTest
 	@Test
 	@Transactional
 	void testPickup() throws Exception {
-		OrderDto saved = service.createOrder(cartId);
+		OrderDto saved = service.createOrder(cartId, order);
 
 //		service.paymentReceived(saved.getId());
 
