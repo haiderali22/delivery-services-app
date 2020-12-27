@@ -19,11 +19,14 @@ public class TestRedisConfiguration {
 
     @PostConstruct
     public void postConstruct() {
-        redisServer.start();
+    	if(!redisServer.isActive())
+    		redisServer.start();
     }
 
     @PreDestroy
     public void preDestroy() {
-        redisServer.stop();
+    	
+    	if(redisServer.isActive())
+        	redisServer.stop();
     }
 }

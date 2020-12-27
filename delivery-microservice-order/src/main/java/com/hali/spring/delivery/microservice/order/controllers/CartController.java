@@ -23,9 +23,9 @@ public class CartController
 	private final CartService cartService;
 	
 	@GetMapping("/{cartId}")
-	public List<ItemDto> getCart(String cartId)
+	public List<ItemDto> getCart(@PathVariable("cartId") String cartId)
 	{
-		return cartService.getCart(cartId);		
+		return cartService.getCart(cartId);
 	}	
 	
 	 @PostMapping(value = "/{cartId}", params = {"productId", "quantity"})
