@@ -9,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +16,7 @@ import lombok.Setter;
 @Table(name = "categories")
 @Setter
 @Getter
-public class Category 
+public class Category
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +26,5 @@ public class Category
 	private String name;
 
 	@ManyToMany(mappedBy = "categories")
-	@JsonIgnore
 	private List<Product> products;
 }

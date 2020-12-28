@@ -1,4 +1,5 @@
 package com.hali.spring.delivery.ms.catalog.domain;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +31,7 @@ public class Product
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
+
 	@ManyToOne
 	@PrimaryKeyJoinColumn(name  = "company_id" , foreignKey = @ForeignKey (name ="fk_product_company_id"))
 	private Company company;
@@ -38,10 +40,19 @@ public class Product
 	@Column(name = "version")
 	private Integer version;
 
-	private String name;
-	
+	@Column (name = "price")
+	@NotNull
+	private BigDecimal price;
+
+	@Column (name = "product_name")
+	@NotNull
+	private String productName;
+
+	@Column (name = "discription")
 	private String description;
 
+	@Column (name = "quantity")
+	private int quantity;
 
 
 	@ManyToMany(cascade = CascadeType.ALL)
