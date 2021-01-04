@@ -44,13 +44,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hali.spring.delivery.microservice.order.config.communication.CommunicationBeanConfig;
-import com.hali.spring.delivery.microservice.order.domain.Order;
-import com.hali.spring.delivery.microservice.order.domain.OrderState;
-import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
-import com.hali.spring.delivery.ms.model.OrderDto;
-import com.hali.spring.delivery.ms.model.events.OrderPaymentResponse;
-import com.hali.spring.delivery.ms.model.events.OrderValidateResponse;
+import com.hali.spring.deliveryms.model.OrderDto;
+import com.hali.spring.deliveryms.model.events.OrderPaymentResponse;
+import com.hali.spring.deliveryms.model.events.OrderValidateResponse;
+import com.hali.spring.deliveryms.order.config.messaging.CommunicationBeanConfig;
+import com.hali.spring.deliveryms.order.domain.Order;
+import com.hali.spring.deliveryms.order.domain.OrderState;
+import com.hali.spring.deliveryms.order.repositories.OrderRepository;
+import com.hali.spring.deliveryms.order.services.OrderService;
 
 import lombok.extern.slf4j.Slf4j;
 

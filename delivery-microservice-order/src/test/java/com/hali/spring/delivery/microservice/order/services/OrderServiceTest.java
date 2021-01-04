@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hali.spring.delivery.microservice.order.domain.Order;
-import com.hali.spring.delivery.microservice.order.domain.OrderHistory;
-import com.hali.spring.delivery.microservice.order.domain.OrderState;
-import com.hali.spring.delivery.microservice.order.repositories.OrderHistoryRepository;
-import com.hali.spring.delivery.microservice.order.repositories.OrderRepository;
-import com.hali.spring.delivery.ms.model.OrderDto;
+import com.hali.spring.deliveryms.model.OrderDto;
+import com.hali.spring.deliveryms.order.domain.Order;
+import com.hali.spring.deliveryms.order.domain.OrderHistory;
+import com.hali.spring.deliveryms.order.domain.OrderState;
+import com.hali.spring.deliveryms.order.repositories.OrderHistoryRepository;
+import com.hali.spring.deliveryms.order.repositories.OrderRepository;
+import com.hali.spring.deliveryms.order.services.OrderService;
 
 @SpringBootTest
 class OrderServiceTest 

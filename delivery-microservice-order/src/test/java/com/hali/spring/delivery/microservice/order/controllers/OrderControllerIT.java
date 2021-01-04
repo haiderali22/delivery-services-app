@@ -27,12 +27,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hali.spring.delivery.microservice.order.TestRedisConfiguration;
-import com.hali.spring.delivery.microservice.order.config.communication.CommunicationBeanConfig;
-import com.hali.spring.delivery.microservice.order.repositories.ItemRedisRepository;
-import com.hali.spring.delivery.ms.model.ItemDto;
-import com.hali.spring.delivery.ms.model.OrderDto;
-import com.hali.spring.delivery.ms.model.ProductDto;
-import com.hali.spring.delivery.ms.order.utils.CartUtilities;
+import com.hali.spring.deliveryms.model.ItemDto;
+import com.hali.spring.deliveryms.model.OrderDto;
+import com.hali.spring.deliveryms.model.ProductDto;
+import com.hali.spring.deliveryms.order.config.messaging.CommunicationBeanConfig;
+import com.hali.spring.deliveryms.order.repositories.ItemRedisRepository;
+import com.hali.spring.deliveryms.order.utils.CartUtilities;
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,classes = TestRedisConfiguration.class)

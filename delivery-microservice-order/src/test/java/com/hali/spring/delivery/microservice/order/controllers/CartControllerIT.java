@@ -27,8 +27,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.hali.spring.delivery.microservice.order.TestRedisConfiguration;
-import com.hali.spring.delivery.ms.model.ItemDto;
-import com.hali.spring.delivery.ms.model.ProductDto;
+import com.hali.spring.deliveryms.model.ItemDto;
+import com.hali.spring.deliveryms.model.ProductDto;
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,classes = TestRedisConfiguration.class)
