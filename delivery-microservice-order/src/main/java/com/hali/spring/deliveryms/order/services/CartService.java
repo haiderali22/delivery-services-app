@@ -2,7 +2,6 @@ package com.hali.spring.deliveryms.order.services;
 
 import java.util.List;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.hali.spring.deliveryms.model.ItemDto;
@@ -16,12 +15,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CartService {
-
-	private final RedisTemplate<String, ItemDto> redisTemplate;
+	
 	private final ProductClient productClient;
 	private final ItemRedisRepository itemRedisRepository;
 
-	public List<ItemDto> getCart(String cartId) 
+	public List<ItemDto> getCart(String cartId) 		
 	{		
 		return itemRedisRepository.getCart(cartId);		
 	}

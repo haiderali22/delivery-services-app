@@ -19,7 +19,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 //@Configuration
-public class CommunicationBeanConfig
+public class MessagingBeanConfig
 {
 	public static final String ORDER_VALIDATE_QUEUE_REQUEST = "order-validate-request";
 	public static final String ORDER_VALIDATE_QUEUE_RESPONSE = "order-validate-reponse";

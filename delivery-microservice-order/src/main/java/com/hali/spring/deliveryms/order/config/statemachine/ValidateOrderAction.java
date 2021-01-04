@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hali.spring.deliveryms.model.events.OrderValidationRequest;
-import com.hali.spring.deliveryms.order.config.messaging.CommunicationBeanConfig;
+import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 import com.hali.spring.deliveryms.order.domain.Order;
 import com.hali.spring.deliveryms.order.domain.OrderEvent;
 import com.hali.spring.deliveryms.order.domain.OrderState;
@@ -43,7 +43,7 @@ public class ValidateOrderAction implements Action<OrderState, OrderEvent>
 					OrderValidationRequest req = OrderValidationRequest.builder().
 							order(mapper.map(order.get())).build();
 					try {
-						template.send(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST,
+						template.send(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST,
 								objMapper.writeValueAsString(req));
 					} catch (JsonProcessingException e) {
 						log.error("error parsing request",e);

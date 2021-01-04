@@ -52,12 +52,12 @@ class CartControllerIT {
 		ProductDto product = new ProductDto();
 		product.setPrice(new BigDecimal(200));
 		product.setProductName("PROD1");
-		product.setId(1L);
+		product.setId("1");
 		
 		ProductDto product2 = new ProductDto();
 		product2.setPrice(new BigDecimal(400));
 		product2.setProductName("PROD2");
-		product2.setId(2L);
+		product2.setId("2");
 			
 		stubFor(WireMock.get("/api/product/" + productId)
                 .willReturn(aResponse()

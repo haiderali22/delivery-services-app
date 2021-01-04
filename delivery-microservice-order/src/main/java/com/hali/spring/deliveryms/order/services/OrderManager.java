@@ -29,7 +29,7 @@ public class OrderManager
 
 	private final OrderRepository orderRepository;
 	private final StateMachineFactory<OrderState, OrderEvent> factory;
-	private final  OrderStateChangeInterceptor orderStateChangeInterceptor;
+	private final OrderStateChangeInterceptor orderStateChangeInterceptor;
 
 	@Transactional
 	public Order placeOrder(Order order)
@@ -37,14 +37,14 @@ public class OrderManager
 		Order savedOrder = orderRepository.saveAndFlush(order);
 
 		//sendEvent(savedOrder.getId(),OrderEvent.ORDER_PLACED);
-//
-//		Message<OrderEvent> msg = MessageBuilder.withPayload(OrderEvent.VALIDATE_ORDER).
-//				setHeader(ORDER_ID_HEADER, savedOrder.getId()).
-//				setHeader(ORDER_PREPAID_HEADER, savedOrder.isPrePaid())
-//				.build();
+		//
+		//		Message<OrderEvent> msg = MessageBuilder.withPayload(OrderEvent.VALIDATE_ORDER).
+		//				setHeader(ORDER_ID_HEADER, savedOrder.getId()).
+		//				setHeader(ORDER_PREPAID_HEADER, savedOrder.isPrePaid())
+		//				.build();
 
 		sendEvent(savedOrder,OrderEvent.VALIDATE_ORDER);
-		
+
 		return savedOrder;
 	}
 
@@ -58,7 +58,7 @@ public class OrderManager
 
 		getStateMachine( order.getId()).sendEvent(msg);
 	}
-	
+
 	private void sendEvent(Long orderId , 
 			OrderEvent event)
 	{
@@ -103,41 +103,41 @@ public class OrderManager
 	public void processValidationResponse(OrderValidateResponse response) throws Exception 
 	{
 		Order order = orderRepository.getOne(response.getOrderId());
-		
+
 		if(response.isValidated())
 			sendEvent(order,OrderEvent.VALIDATION_PASSED);
 		else
 			sendEvent(order.getId(),OrderEvent.VALIDATE_FAILED);
-		
+
 	}
 
 	@Transactional
 	public void processPaymentResponse(OrderPaymentResponse response) 
 	{
 		Order order = orderRepository.getOne(response.getOrderId());
-		
+
 		if(response.isRecevied())
 			sendEvent(order,OrderEvent.PAYMENT_RECEIVED);
 		else
 			sendEvent(order.getId(),OrderEvent.CANCEL);
 	}
 
-//	private synchronized StateMachine<OrderState, OrderEvent> getStateMachine(Long orderId) throws Exception 
-//	{
-//		String machineId = Long.toString(orderId);
-//		
-//		listener.resetMessages();
-//		if (currentStateMachine == null) {
-//			currentStateMachine = stateMachineService.acquireStateMachine(machineId);
-//			currentStateMachine.addStateListener(listener);
-//			currentStateMachine.start();
-//		} else if (!ObjectUtils.nullSafeEquals(currentStateMachine.getId(), machineId)) {
-//			stateMachineService.releaseStateMachine(currentStateMachine.getId());
-//			currentStateMachine.stop();
-//			currentStateMachine = stateMachineService.acquireStateMachine(machineId);
-//			currentStateMachine.addStateListener(listener);
-//			currentStateMachine.start();
-//		}
-//		return currentStateMachine;
-//	}
+	//	private synchronized StateMachine<OrderState, OrderEvent> getStateMachine(Long orderId) throws Exception 
+	//	{
+	//		String machineId = Long.toString(orderId);
+	//		
+	//		listener.resetMessages();
+	//		if (currentStateMachine == null) {
+	//			currentStateMachine = stateMachineService.acquireStateMachine(machineId);
+	//			currentStateMachine.addStateListener(listener);
+	//			currentStateMachine.start();
+	//		} else if (!ObjectUtils.nullSafeEquals(currentStateMachine.getId(), machineId)) {
+	//			stateMachineService.releaseStateMachine(currentStateMachine.getId());
+	//			currentStateMachine.stop();
+	//			currentStateMachine = stateMachineService.acquireStateMachine(machineId);
+	//			currentStateMachine.addStateListener(listener);
+	//			currentStateMachine.start();
+	//		}
+	//		return currentStateMachine;
+	//	}
 }

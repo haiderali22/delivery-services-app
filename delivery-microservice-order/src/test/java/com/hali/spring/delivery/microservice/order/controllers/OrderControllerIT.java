@@ -30,7 +30,7 @@ import com.hali.spring.delivery.microservice.order.TestRedisConfiguration;
 import com.hali.spring.deliveryms.model.ItemDto;
 import com.hali.spring.deliveryms.model.OrderDto;
 import com.hali.spring.deliveryms.model.ProductDto;
-import com.hali.spring.deliveryms.order.config.messaging.CommunicationBeanConfig;
+import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 import com.hali.spring.deliveryms.order.repositories.ItemRedisRepository;
 import com.hali.spring.deliveryms.order.utils.CartUtilities;
 
@@ -38,8 +38,8 @@ import com.hali.spring.deliveryms.order.utils.CartUtilities;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,classes = TestRedisConfiguration.class)
 @AutoConfigureMockMvc
 @EmbeddedKafka(partitions = 1,bootstrapServersProperty = "${spring.kafka.bootstrap-servers}",
-	topics = {CommunicationBeanConfig.
-	ORDER_VALIDATE_QUEUE_REQUEST,CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE})
+	topics = {MessagingBeanConfig.
+	ORDER_VALIDATE_QUEUE_REQUEST,MessagingBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE})
 class OrderControllerIT {
 
 	
@@ -64,13 +64,13 @@ class OrderControllerIT {
 		ProductDto product = new ProductDto();
 		product.setPrice(new BigDecimal(200));
 		product.setProductName("PROD1");
-		product.setId(1L);
+		product.setId("1");
 		ItemDto item = new ItemDto(2, product, CartUtilities.getSubTotalForItem(product,2));
 		
 		ProductDto product2 = new ProductDto();
 		product2.setPrice(new BigDecimal(400));
 		product2.setProductName("PROD2");
-		product2.setId(2L);
+		product2.setId("2");
 		ItemDto item2 = new ItemDto(4, product2, CartUtilities.getSubTotalForItem(product,4));
 			
 		itemRedisRepository.addItemToCart(cartId, product.getId().toString(), item);
@@ -103,10 +103,10 @@ class OrderControllerIT {
 		mockMvc.perform(post("/api/order/{cartID}", cartId ).content(objectMapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON)
 			      	.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	
-		Consumer<String, String> consumer = configureConsumer(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+		Consumer<String, String> consumer = configureConsumer(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 
 		ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
-				CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+				MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 			
 		assertThat(singleRecord).isNotNull();
 		System.out.println("Log Listener request " + singleRecord.value());

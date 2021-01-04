@@ -23,14 +23,14 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Entity(name = "products")
+@Entity
 @Table(name = "products")
 public class Product 
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private Long id;
+	private String id;
 
 	@ManyToOne
 	@PrimaryKeyJoinColumn(name  = "company_id" , foreignKey = @ForeignKey (name ="fk_product_company_id"))

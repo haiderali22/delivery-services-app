@@ -23,7 +23,7 @@ import lombok.Setter;
 public class Product
 {
 	    @Id
-	    private Long id;
+	    private String id;
 
 	    @Column (name = "product_name")
 	    @NotNull

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hali.spring.deliveryms.catalog.domain.Category;
@@ -13,13 +14,14 @@ import com.hali.spring.deliveryms.catalog.servcie.ProductService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequestMapping(value = "/api/product")
 @RequiredArgsConstructor
-public class ProductController 
+public class ProductController
 {
 	private final ProductService productService;
 	
-	@GetMapping("/product/{id}")
-	public Product getProduct(@Param("id") Long id)
+	@GetMapping("/{id}")
+	public Product getProduct(@Param("id") String id)
 	{
 		return productService.getProduct(id);
 	}

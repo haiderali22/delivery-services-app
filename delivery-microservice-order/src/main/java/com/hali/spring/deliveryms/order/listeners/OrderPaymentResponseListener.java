@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.hali.spring.deliveryms.model.events.OrderPaymentResponse;
 import com.hali.spring.deliveryms.model.events.OrderValidateResponse;
-import com.hali.spring.deliveryms.order.config.messaging.CommunicationBeanConfig;
+import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 import com.hali.spring.deliveryms.order.services.OrderManager;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class OrderPaymentResponseListener
 {
 	private final OrderManager orderManager;
 	
-	@KafkaListener(topics = CommunicationBeanConfig.ORDER_PAYMENT_QUEUE_RESPONSE,
+	@KafkaListener(topics = MessagingBeanConfig.ORDER_PAYMENT_QUEUE_RESPONSE,
 			groupId = "order-delivery")
 	public void orderValidate(Message<OrderPaymentResponse> response) throws Exception
 	{

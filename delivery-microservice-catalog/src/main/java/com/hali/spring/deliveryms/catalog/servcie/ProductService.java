@@ -22,7 +22,7 @@ public class ProductService
 	private final CategoryRepository categoryRepository; 
 	private final ProductMapper productMapper;
 
-	public Product getProduct(Long id) 
+	public Product getProduct(String id) 
 	{		
 		return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product not found"));
 	}
@@ -48,7 +48,7 @@ public class ProductService
 		
 	}
 
-	public void deleteProduct(Long id) {
+	public void deleteProduct(String id) {
 		 productRepository.deleteById(id);
 	}
 	

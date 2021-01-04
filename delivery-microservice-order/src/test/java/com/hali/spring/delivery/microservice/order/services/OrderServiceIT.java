@@ -47,7 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hali.spring.deliveryms.model.OrderDto;
 import com.hali.spring.deliveryms.model.events.OrderPaymentResponse;
 import com.hali.spring.deliveryms.model.events.OrderValidateResponse;
-import com.hali.spring.deliveryms.order.config.messaging.CommunicationBeanConfig;
+import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 import com.hali.spring.deliveryms.order.domain.Order;
 import com.hali.spring.deliveryms.order.domain.OrderState;
 import com.hali.spring.deliveryms.order.repositories.OrderRepository;
@@ -58,8 +58,8 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 @Slf4j
 @EmbeddedKafka(partitions = 1,bootstrapServersProperty = "${spring.kafka.bootstrap-servers}",
-		topics = {CommunicationBeanConfig.
-		ORDER_VALIDATE_QUEUE_REQUEST,CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE})
+		topics = {MessagingBeanConfig.
+		ORDER_VALIDATE_QUEUE_REQUEST,MessagingBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE})
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OrderServiceIT 
 {
@@ -100,7 +100,7 @@ public class OrderServiceIT
 		//        Map<String, Object> configs = new HashMap<>(KafkaTestUtils.consumerProps("order-delivery", "false", embeddedKafkaBroker));
 		//        DefaultKafkaConsumerFactory<String, String> consumerFactory = new DefaultKafkaConsumerFactory<>(configs, new StringDeserializer(), new StringDeserializer());
 		//        ContainerProperties containerProperties = 
-		//        		new ContainerProperties(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+		//        		new ContainerProperties(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 		//        container = new KafkaMessageListenerContainer(consumerFactory, containerProperties);
 		//        consumerRecords = new LinkedBlockingQueue<>();
 		//        container.setupMessageListener((MessageListener<String, String>) consumerRecords::add);
@@ -124,7 +124,7 @@ public class OrderServiceIT
 		OrderValidateResponse resp = OrderValidateResponse.builder().OrderId(1L).validated(false).build();
 		//         
 		//         
-		//         producer.send(new ProducerRecord<>(CommunicationBeanConfig.
+		//         producer.send(new ProducerRecord<>(MessagingBeanConfig.
 		//        		 ORDER_VALIDATE_QUEUE_REQUEST, "my-evt-id", objMapper.writeValueAsString(resp)));
 		//         producer.flush();
 		//
@@ -134,16 +134,16 @@ public class OrderServiceIT
 
 		
 		
-		Consumer<String, String> consumer = configureConsumer(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+		Consumer<String, String> consumer = configureConsumer(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 //		Producer<Integer, String> producer = configureProducer();
 //
-//		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
+//		producer.send(new ProducerRecord<>(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				123,  objMapper.writeValueAsString(resp)));
 		
 		OrderDto saved = service.createOrder(cartId, order);
 
 		ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
-				CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+				MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 		
 	
 		
@@ -154,7 +154,7 @@ public class OrderServiceIT
 		
 //		Producer<String, String> producer = configureProducer();
 //
-//		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
+//		producer.send(new ProducerRecord<>(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				"123",  objMapper.writeValueAsString(resp)));
 		
 		
@@ -168,10 +168,10 @@ public class OrderServiceIT
 	{
 		
 		
-//		Consumer<String, String> consumer = configureConsumer(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+//		Consumer<String, String> consumer = configureConsumer(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 //		Producer<Integer, String> producer = configureProducer();
 //
-//		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
+//		producer.send(new ProducerRecord<>(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST, 
 //				123,  objMapper.writeValueAsString(resp)));
 		
 		OrderDto saved = service.createOrder(cartId, order);
@@ -181,7 +181,7 @@ public class OrderServiceIT
 		
 
 //		ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
-//				CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+//				MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 //		
 //	
 //		
@@ -192,7 +192,7 @@ public class OrderServiceIT
 		
 		Producer<Integer, Object> producer = configureProducer();
 //
-		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE, 
+		producer.send(new ProducerRecord<>(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE, 
 				123,  resp));
 		
 		
@@ -219,7 +219,7 @@ public class OrderServiceIT
 					.OrderId(saved.getId())
 					.validated(true).build();
 		
-		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE, 
+		producer.send(new ProducerRecord<>(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE, 
 				123,  resp));		
 		
 		Awaitility.await().atMost(Durations.FIVE_SECONDS).untilAsserted(()->{
@@ -242,7 +242,7 @@ public class OrderServiceIT
 		OrderValidateResponse resp = OrderValidateResponse.builder().
 				OrderId(saved.getId()).validated(true).build();		
 
-		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE, 
+		producer.send(new ProducerRecord<>(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE, 
 				123,  resp));
 		
 		Awaitility.await().atMost(Durations.FIVE_SECONDS).untilAsserted(()->{
@@ -254,7 +254,7 @@ public class OrderServiceIT
 		OrderPaymentResponse payRes = OrderPaymentResponse.builder().
 				OrderId(saved.getId()).recevied(true).build();	
 		
-		producer.send(new ProducerRecord<>(CommunicationBeanConfig.ORDER_PAYMENT_QUEUE_RESPONSE, 
+		producer.send(new ProducerRecord<>(MessagingBeanConfig.ORDER_PAYMENT_QUEUE_RESPONSE, 
 				123,  payRes));		
 		
 		Awaitility.await().atMost(Durations.FIVE_SECONDS).untilAsserted(()->{

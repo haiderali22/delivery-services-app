@@ -1,4 +1,4 @@
-package com.hali.spring.deliveryms.model;
+package com.hali.spring.deliveryms.catalog.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

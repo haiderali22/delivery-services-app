@@ -5,12 +5,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import com.hali.spring.deliveryms.model.events.OrderValidationRequest;
-import com.hali.spring.deliveryms.order.config.messaging.CommunicationBeanConfig;
+import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 
 //@Component
 public class OrderRequestListener 
 {
-//	@KafkaListener(topics = CommunicationBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST)
+//	@KafkaListener(topics = MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST)
 	public void listen(@Payload OrderValidationRequest req)
 	{
 		
