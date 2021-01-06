@@ -1,4 +1,4 @@
-package com.hali.spring.delivery.microservice.order.controllers;
+package com.hali.spring.deliveryms.order.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -26,12 +27,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.hali.spring.delivery.microservice.order.TestRedisConfiguration;
 import com.hali.spring.deliveryms.model.ItemDto;
 import com.hali.spring.deliveryms.model.ProductDto;
+import com.hali.spring.deliveryms.order.TestRedisConfiguration;
 
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,classes = TestRedisConfiguration.class)
+@EmbeddedKafka(partitions = 1,bootstrapServersProperty = "${spring.kafka.bootstrap-servers}")
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 0)
 class CartControllerIT {

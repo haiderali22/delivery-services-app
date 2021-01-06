@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderValidateResponse 
+public class ValidateOrderReponse 
 {
 	private Long OrderId;
 	private boolean validated;

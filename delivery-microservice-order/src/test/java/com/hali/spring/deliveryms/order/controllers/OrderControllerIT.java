@@ -1,4 +1,4 @@
-package com.hali.spring.delivery.microservice.order.controllers;
+package com.hali.spring.deliveryms.order.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,10 +26,10 @@ import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hali.spring.delivery.microservice.order.TestRedisConfiguration;
 import com.hali.spring.deliveryms.model.ItemDto;
 import com.hali.spring.deliveryms.model.OrderDto;
 import com.hali.spring.deliveryms.model.ProductDto;
+import com.hali.spring.deliveryms.order.TestRedisConfiguration;
 import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 import com.hali.spring.deliveryms.order.repositories.ItemRedisRepository;
 import com.hali.spring.deliveryms.order.utils.CartUtilities;
@@ -100,10 +100,10 @@ class OrderControllerIT {
 		
 		order.setReferenceNumber("R1234");
 		
+		Consumer<String, String> consumer = configureConsumer(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+		
 		mockMvc.perform(post("/api/order/{cartID}", cartId ).content(objectMapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON)
 			      	.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
-	
-		Consumer<String, String> consumer = configureConsumer(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 
 		ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
 				MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);

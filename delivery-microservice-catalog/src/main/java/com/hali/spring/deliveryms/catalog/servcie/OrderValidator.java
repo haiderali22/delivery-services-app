@@ -15,7 +15,7 @@ public class OrderValidator
 {
 	private final ProductRepository productRepository;
 	
-	public boolean validateProduct(OrderDto order)
+	public boolean validateOrder(OrderDto order)
 	{
 		   AtomicInteger beersNotFound = new AtomicInteger();
 

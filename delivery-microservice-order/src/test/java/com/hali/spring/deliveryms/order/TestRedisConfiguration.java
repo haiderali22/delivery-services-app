@@ -1,4 +1,4 @@
-package com.hali.spring.delivery.microservice.order;
+package com.hali.spring.deliveryms.order;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

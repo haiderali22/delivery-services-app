@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class OrderValidationRequest 
+public class ValidateOrderRequest   
 {
 	private OrderDto order;
 }

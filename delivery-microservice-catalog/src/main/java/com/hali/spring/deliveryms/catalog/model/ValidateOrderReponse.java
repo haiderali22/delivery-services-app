@@ -1,14 +1,16 @@
 package com.hali.spring.deliveryms.catalog.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class OrderValidateResponse 
+@Builder
+public class ValidateOrderReponse 
 {
-	private Long OrderId;
-	private boolean validated;
+	private String OrderId;
+	private boolean valid;
 	
 	private String reason;
 }

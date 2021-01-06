@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderValidationRequest implements Serializable
+public class ValidateOrderRequest implements Serializable
 {
 	/**
 	 * 

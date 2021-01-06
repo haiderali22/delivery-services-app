@@ -6,7 +6,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import com.hali.spring.deliveryms.model.events.OrderPaymentResponse;
-import com.hali.spring.deliveryms.model.events.OrderValidateResponse;
+import com.hali.spring.deliveryms.model.events.ValidateOrderReponse;
 import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 import com.hali.spring.deliveryms.order.services.OrderManager;
 

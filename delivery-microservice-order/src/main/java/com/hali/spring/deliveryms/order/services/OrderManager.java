@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hali.spring.deliveryms.model.events.OrderPaymentResponse;
-import com.hali.spring.deliveryms.model.events.OrderValidateResponse;
+import com.hali.spring.deliveryms.model.events.ValidateOrderReponse;
 import com.hali.spring.deliveryms.order.config.statemachine.OrderStateChangeInterceptor;
 import com.hali.spring.deliveryms.order.domain.Order;
 import com.hali.spring.deliveryms.order.domain.OrderEvent;
@@ -100,7 +100,7 @@ public class OrderManager
 	}
 
 	@Transactional
-	public void processValidationResponse(OrderValidateResponse response) throws Exception 
+	public void processValidationResponse(ValidateOrderReponse response) throws Exception 
 	{
 		Order order = orderRepository.getOne(response.getOrderId());
 

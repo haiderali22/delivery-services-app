@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hali.spring.deliveryms.model.events.OrderValidationRequest;
+import com.hali.spring.deliveryms.model.events.ValidateOrderRequest;
 import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 import com.hali.spring.deliveryms.order.domain.Order;
 import com.hali.spring.deliveryms.order.domain.OrderEvent;
@@ -18,6 +18,7 @@ import com.hali.spring.deliveryms.order.domain.OrderState;
 import com.hali.spring.deliveryms.order.mapper.OrderMapper;
 import com.hali.spring.deliveryms.order.repositories.OrderRepository;
 import com.hali.spring.deliveryms.order.services.OrderManager;
+import com.hali.spring.deliveryms.order.utils.JsonUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ValidateOrderAction implements Action<OrderState, OrderEvent> 
 {
-	private final KafkaTemplate<String,String> template;
+	private final KafkaTemplate<String,Object> template;
 	private final OrderRepository orderRepository;
 	private final OrderMapper mapper;
 	private final ObjectMapper objMapper;
@@ -40,14 +41,11 @@ public class ValidateOrderAction implements Action<OrderState, OrderEvent>
 				Optional<Order> order =  orderRepository.findById(orderId);
 
 				if(order.isPresent()){
-					OrderValidationRequest req = OrderValidationRequest.builder().
+					ValidateOrderRequest req = ValidateOrderRequest.builder().
 							order(mapper.map(order.get())).build();
-					try {
+					
 						template.send(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST,
-								objMapper.writeValueAsString(req));
-					} catch (JsonProcessingException e) {
-						log.error("error parsing request",e);
-					}
+														JsonUtil.convertToString(objMapper, req));
 					//MessageBuilder.withPayload(req).build());
 				}
 				else{
