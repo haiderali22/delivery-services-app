@@ -22,11 +22,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "order_history")
-@Table(name = "order_history")
-@EntityListeners(AuditingEntityListener.class)
-@Setter
-@Getter
+//@Entity(name = "order_history")
+//@Table(name = "order_history")
+//@EntityListeners(AuditingEntityListener.class)
+//@Setter
+//@Getter
 public class OrderHistory 
 {
 	@Id

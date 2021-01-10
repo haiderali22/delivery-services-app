@@ -25,7 +25,7 @@ public class OrderDto
 
 	private List<ItemDto> items;
 
-	private Long id;
+	private String id;
 
 	private Boolean prePaid;
 }

@@ -12,6 +12,7 @@ import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.hali.spring.deliveryms.model.ItemDto;
@@ -54,6 +55,7 @@ public class OrderService
 	private final CartService cartService;
 	private final UserClient userClient;
 
+	@Transactional
 	public OrderDto createOrder(String cartId,OrderDto order) throws OrderException
 	{
 		List<ItemDto> cart = cartService.getCart(cartId);
@@ -64,7 +66,7 @@ public class OrderService
 //	    user.setId(1L);
 	    //User user = userClient.getUserById(userId);
 	    
-	    if(cart != null && user != null) {
+	    if(cart != null && !cart.isEmpty() && user != null) {
 	    	Order createdOrder = this.createOrder(cart, user , order);
 	    	
 	    	Order savedOrder = orderManager.placeOrder(createdOrder);
@@ -99,12 +101,12 @@ public class OrderService
 	    }
 	
 
-	public void paymentReceived(Long id) throws Exception {
+	public void paymentReceived(String id) throws Exception {
 		
 		orderManager.paymentReceived(id);
 	}
 
-	public void orderRiderAssigned(Long id) throws Exception {
+	public void orderRiderAssigned(String id) throws Exception {
 		orderManager.orderRiderAssigned(id);
 	}
 

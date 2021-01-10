@@ -8,7 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 import com.hali.spring.deliveryms.order.domain.OrderHistory;
 
-public interface OrderHistoryRepository extends JpaRepository<OrderHistory, Long> 
+public interface OrderHistoryRepository 
+//extends JpaRepository<OrderHistory, Long> 
 {
 	@Query("FROM order_history o where order_id = :orderID")
 	List<OrderHistory> getAllByOrder(@Param("orderID") Long orderID);

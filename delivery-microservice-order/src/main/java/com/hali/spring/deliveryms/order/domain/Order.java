@@ -2,6 +2,7 @@ package com.hali.spring.deliveryms.order.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
@@ -20,25 +21,29 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "orders")
 @Setter
 @Getter
-public class Order extends Auditable<Long>
+@NoArgsConstructor
+public class Order 
+//extends Auditable<Long>
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private Long id; 
+	private String id; 
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "current_state")
@@ -67,9 +72,8 @@ public class Order extends Auditable<Long>
 	@Column(name = "prepaid")
 	private boolean prePaid;
 
-	@ManyToMany (cascade = CascadeType.ALL)
-	@JoinTable (name = "cart" , joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn (name = "item_id"))
-	private List<Item> items;
+	@OneToMany (cascade = CascadeType.ALL)
+	private List<Item> items = new ArrayList<>();
 
 //	@ManyToOne (cascade = CascadeType.ALL) TODO: populate user
 //	@JoinColumn (name = "user_id")

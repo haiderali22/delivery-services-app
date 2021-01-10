@@ -14,12 +14,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table (name = "products")
 @Setter
 @Getter
+@NoArgsConstructor
 public class Product
 {
 	    @Id
@@ -33,7 +35,7 @@ public class Product
 	    @NotNull
 	    private BigDecimal price;
 
-	    @OneToMany (mappedBy = "product", cascade = CascadeType.ALL)
-	    private List<Item> items;
+//	    @OneToMany (mappedBy = "product", cascade = CascadeType.ALL)
+//	    private List<Item> items;
 }
 

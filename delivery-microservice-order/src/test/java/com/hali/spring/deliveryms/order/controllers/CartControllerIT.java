@@ -13,6 +13,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,15 +31,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.hali.spring.deliveryms.model.ItemDto;
 import com.hali.spring.deliveryms.model.ProductDto;
-import com.hali.spring.deliveryms.order.TestRedisConfiguration;
+
+import se.svt.oss.junit5.redis.EmbeddedRedisExtension;
 
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,classes = TestRedisConfiguration.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @EmbeddedKafka(partitions = 1,bootstrapServersProperty = "${spring.kafka.bootstrap-servers}")
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 0)
 class CartControllerIT {
 
+	@RegisterExtension
+    static EmbeddedRedisExtension staticExtension = new EmbeddedRedisExtension(true);
 	
 	@Autowired
 	MockMvc mockMvc;

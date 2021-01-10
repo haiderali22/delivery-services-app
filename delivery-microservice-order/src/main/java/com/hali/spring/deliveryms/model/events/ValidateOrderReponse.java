@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ValidateOrderReponse 
 {
-	private Long OrderId;
+	private String orderId;
 	private boolean validated;
 	
 	private String reason;

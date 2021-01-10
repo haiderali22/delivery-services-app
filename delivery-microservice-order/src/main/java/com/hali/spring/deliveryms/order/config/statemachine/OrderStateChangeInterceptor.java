@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<OrderState, OrderEvent> 
 {
 	private final OrderRepository orderRepository;
-	private final OrderHistoryRepository orderHistoryRepository;
+//	private final OrderHistoryRepository orderHistoryRepository;
 	
 	@Override
 	@Transactional
@@ -34,7 +34,7 @@ public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<
 			Transition<OrderState, OrderEvent> transition, StateMachine<OrderState, OrderEvent> stateMachine) {
 		
 		Optional.ofNullable(message).ifPresent( msg -> {
-				Optional.ofNullable(Long.class.cast( msg.getHeaders().get(OrderManager.ORDER_ID_HEADER)))
+				Optional.ofNullable(String.class.cast( msg.getHeaders().get(OrderManager.ORDER_ID_HEADER)))
 				.ifPresent( orderID -> {
 							Order order = orderRepository.getOne(orderID);	
 							
@@ -44,15 +44,15 @@ public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<
 							
 							orderRepository.saveAndFlush(order);
 							
-							OrderHistory oHistory = new OrderHistory();
-							
-							oHistory.setCurrentState(state.getId());
-							oHistory.setPreviousState(previousState);
-							oHistory.setEvent(transition.getTrigger().getEvent());
-							
-							oHistory.setOrder(order);
-							
-							orderHistoryRepository.save(oHistory);
+//							OrderHistory oHistory = new OrderHistory();
+//							
+//							oHistory.setCurrentState(state.getId());
+//							oHistory.setPreviousState(previousState);
+//							oHistory.setEvent(transition.getTrigger().getEvent());
+//							
+//							oHistory.setOrder(order);
+//							
+//							orderHistoryRepository.save(oHistory);
 							
 					});
 		});

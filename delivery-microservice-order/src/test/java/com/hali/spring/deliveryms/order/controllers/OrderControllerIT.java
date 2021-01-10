@@ -11,8 +11,13 @@ import java.util.Map;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.BytesDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.utils.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,25 +28,33 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.web.servlet.MockMvc;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hali.spring.deliveryms.model.ItemDto;
 import com.hali.spring.deliveryms.model.OrderDto;
 import com.hali.spring.deliveryms.model.ProductDto;
-import com.hali.spring.deliveryms.order.TestRedisConfiguration;
+import com.hali.spring.deliveryms.order.TestKAFKAConfig;
 import com.hali.spring.deliveryms.order.config.messaging.MessagingBeanConfig;
 import com.hali.spring.deliveryms.order.repositories.ItemRedisRepository;
 import com.hali.spring.deliveryms.order.utils.CartUtilities;
 
+import se.svt.oss.junit5.redis.EmbeddedRedisExtension;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,classes = TestRedisConfiguration.class)
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @EmbeddedKafka(partitions = 1,bootstrapServersProperty = "${spring.kafka.bootstrap-servers}",
 	topics = {MessagingBeanConfig.
 	ORDER_VALIDATE_QUEUE_REQUEST,MessagingBeanConfig.ORDER_VALIDATE_QUEUE_RESPONSE})
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class OrderControllerIT {
 
+	@RegisterExtension
+    static EmbeddedRedisExtension staticExtension = new EmbeddedRedisExtension(true);
 	
 	@Autowired
 	MockMvc mockMvc;
@@ -100,24 +113,29 @@ class OrderControllerIT {
 		
 		order.setReferenceNumber("R1234");
 		
-		Consumer<String, String> consumer = configureConsumer(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
+		Consumer<String, Bytes> consumer = TestKAFKAConfig.configureConsumer(embeddedKafkaBroker,
+				MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 		
 		mockMvc.perform(post("/api/order/{cartID}", cartId ).content(objectMapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON)
 			      	.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
-		ConsumerRecord<String, String> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
+		ConsumerRecord<String, Bytes> singleRecord = KafkaTestUtils.getSingleRecord(consumer, 
 				MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST);
 			
 		assertThat(singleRecord).isNotNull();
 		System.out.println("Log Listener request " + singleRecord.value());
 	}
 	
-	private Consumer<String, String> configureConsumer(String topic) {
-		Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("order-delivery", "true", embeddedKafkaBroker);
-		consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		Consumer<String, String> consumer = new DefaultKafkaConsumerFactory<String, String>(consumerProps)
-				.createConsumer();
-		consumer.subscribe(Collections.singleton(topic));
-		return consumer;
-	}
+//	private Consumer<String, Bytes> configureConsumer(String topic) {
+//		Map<String, Object> consumerProps = KafkaTestUtils.consumerProps(MessagingBeanConfig.KAFKA_GROUP_ID, "true", embeddedKafkaBroker);
+//		consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+//		consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, MessagingBeanConfig.KAFKA_GROUP_ID);
+//		consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class);
+//		consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//		Consumer<String, Bytes> consumer = new DefaultKafkaConsumerFactory<String, Bytes>(consumerProps)
+//				.createConsumer();
+//		consumer.subscribe(Collections.singleton(topic));
+//		return consumer;
+//	}
+
 }

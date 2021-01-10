@@ -36,7 +36,7 @@ public class ValidateOrderAction implements Action<OrderState, OrderEvent>
 	@Override
 	public void execute(StateContext<OrderState, OrderEvent> context) {
 		Optional.ofNullable(context.getMessage()).ifPresent( msg -> {
-			Optional.ofNullable(Long.class.cast( msg.getHeaders().get(OrderManager.ORDER_ID_HEADER)))
+			Optional.ofNullable(String.class.cast( msg.getHeaders().get(OrderManager.ORDER_ID_HEADER)))
 			.ifPresent( orderId -> {
 				Optional<Order> order =  orderRepository.findById(orderId);
 

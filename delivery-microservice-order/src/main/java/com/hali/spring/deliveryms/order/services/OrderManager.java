@@ -1,5 +1,7 @@
 package com.hali.spring.deliveryms.order.services;
 
+import java.util.Optional;
+
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
@@ -59,7 +61,7 @@ public class OrderManager
 		getStateMachine( order.getId()).sendEvent(msg);
 	}
 
-	private void sendEvent(Long orderId , 
+	private void sendEvent(String orderId , 
 			OrderEvent event)
 	{
 		Message<OrderEvent> msg = MessageBuilder.withPayload(event).
@@ -69,21 +71,21 @@ public class OrderManager
 		getStateMachine(orderId).sendEvent(msg);
 	}
 
-	public void paymentReceived(Long id )
+	public void paymentReceived(String id )
 	{
 		sendEvent(id,OrderEvent.PAYMENT_RECEIVED);
 	}
 
-	public void orderRiderAssigned(Long id) 
+	public void orderRiderAssigned(String id) 
 	{
 		sendEvent(id,OrderEvent.RIDER_ASSIGNED);
 	}
 
-	private synchronized StateMachine<OrderState, OrderEvent>  getStateMachine(Long orderId)
+	private synchronized StateMachine<OrderState, OrderEvent>  getStateMachine(String orderId)
 	{
 		Order order = orderRepository.getOne(orderId);
 
-		StateMachine<OrderState, OrderEvent> sm = factory.getStateMachine(Long.toString(orderId));
+		StateMachine<OrderState, OrderEvent> sm = factory.getStateMachine(orderId);
 
 		sm.stop();
 
@@ -102,24 +104,34 @@ public class OrderManager
 	@Transactional
 	public void processValidationResponse(ValidateOrderReponse response) throws Exception 
 	{
-		Order order = orderRepository.getOne(response.getOrderId());
+		Optional<Order> fetchedOrder = orderRepository.findById(response.getOrderId());
+//		Optional<Order> fetchedOrder = Optional.of(orderRepository.getOne(response.getOrderId()));
 
-		if(response.isValidated())
-			sendEvent(order,OrderEvent.VALIDATION_PASSED);
-		else
-			sendEvent(order.getId(),OrderEvent.VALIDATE_FAILED);
-
+		fetchedOrder.ifPresentOrElse( order -> {
+			
+			if(response.isValidated())
+				sendEvent(order,OrderEvent.VALIDATION_PASSED);
+			else
+				sendEvent(order.getId(),OrderEvent.VALIDATE_FAILED);
+			
+		}, () ->  { log.error("Order Not Found. Id: " + response.getOrderId());});
 	}
 
 	@Transactional
 	public void processPaymentResponse(OrderPaymentResponse response) 
 	{
-		Order order = orderRepository.getOne(response.getOrderId());
+		Optional<Order> fetchedOrder = orderRepository.findById(response.getOrderId());
 
-		if(response.isRecevied())
-			sendEvent(order,OrderEvent.PAYMENT_RECEIVED);
-		else
-			sendEvent(order.getId(),OrderEvent.CANCEL);
+		fetchedOrder.ifPresentOrElse( order -> {
+			
+
+			if(response.isRecevied())
+				sendEvent(order,OrderEvent.PAYMENT_RECEIVED);
+			else
+				sendEvent(order.getId(),OrderEvent.CANCEL);
+			
+		}, () ->  { log.error("Order Not Found. Id: " + response.getOrderId());});		
+
 	}
 
 	//	private synchronized StateMachine<OrderState, OrderEvent> getStateMachine(Long orderId) throws Exception 

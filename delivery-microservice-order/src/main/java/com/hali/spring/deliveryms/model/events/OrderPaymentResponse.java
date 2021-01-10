@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderPaymentResponse 
 {
-	private Long OrderId;
+	private String OrderId;
 	private boolean recevied;
 	
 	private String reason;
