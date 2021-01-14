@@ -2,7 +2,7 @@ package com.hali.spring.deliveryms.model;
 
 import java.util.List;
 
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Point;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,11 +15,11 @@ public class OrderDto
 	
 	private String referenceNumber;
 	
-	private Point pickupLocation;
+	//private Point pickupLocation;
 	private String pickupAddress;
 	private boolean pickupAddressType;
 	
-	private Point deliveryLocation;
+	//private Point deliveryLocation;
 	private String deliveryAddress;
 	private boolean deliveryAddressType;
 

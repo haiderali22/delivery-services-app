@@ -15,10 +15,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "companies")
-@Table(name = "companies")
-@Setter
-@Getter
+//@Entity(name = "companies")
+//@Table(name = "companies")
+//@Setter
+//@Getter
 public class Company 
 {
 	@Id

@@ -39,7 +39,7 @@ public class OrderService
 //	public static final String ORDER_ID_HEADER = "order_id";
 //	public static final String ORDER_PREPAID_HEADER = "order_pre_paid";
 //
-//	private final OrderRepository orderRepository;
+	private final OrderRepository orderRepository;
 //////	private final StateMachineService<OrderState, OrderEvent> stateMachineService;
 //////	private final StateMachinePersist<OrderState, OrderEvent, String> stateMachinePersist;
 //////	
@@ -110,6 +110,13 @@ public class OrderService
 		orderManager.orderRiderAssigned(id);
 	}
 
+	public OrderDto getOrder(String orderId) {
+		return orderRepository.findById(orderId).map((order) -> orderMapper.map(order)).
+				orElseThrow( () -> new OrderException("Order does not exist Id:" + orderId ));
+	}
 
+	public OrderState findCurrentStateById(String orderId) {
+		return orderRepository.findCurrentStateById(orderId);
+	}
 
 }

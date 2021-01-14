@@ -1,10 +1,8 @@
 package com.hali.spring.deliveryms.order.domain;
 
 import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Point;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +14,7 @@ import lombok.Setter;
 @Embeddable
 public class Location
 {
-	private Point location;	
+	//private Point location;	
 	private String address;
 	private boolean systemGenerated;
 }

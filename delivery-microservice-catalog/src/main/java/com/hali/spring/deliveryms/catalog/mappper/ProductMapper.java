@@ -3,7 +3,7 @@ package com.hali.spring.deliveryms.catalog.mappper;
 import org.mapstruct.Mapper;
 
 import com.hali.spring.deliveryms.catalog.domain.Product;
-import com.hali.spring.deliveryms.catalog.model.ProductDto;
+import com.hali.spring.deliveryms.model.ProductDto;
 
 
 @Mapper

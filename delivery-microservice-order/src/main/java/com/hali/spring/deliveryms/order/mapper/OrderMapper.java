@@ -16,10 +16,10 @@ public interface OrderMapper
 	@Mapping(target = "deliveryLocation", ignore = true)
 	Order map(OrderDto order);
 
-	@Mapping(target = "pickupLocation", ignore = true)
+	//@Mapping(target = "pickupLocation", ignore = true)
 	@Mapping(target = "pickupAddress", ignore = true)
 	@Mapping(target = "pickupAddressType", ignore = true)
-	@Mapping(target = "deliveryLocation", ignore = true)
+	//@Mapping(target = "deliveryLocation", ignore = true)
 	@Mapping(target = "deliveryAddress", ignore = true)
 	@Mapping(target = "deliveryAddressType", ignore = true)
 	OrderDto map(Order order);
@@ -30,7 +30,7 @@ public interface OrderMapper
 
 		if(pickupLocation != null){
 			orderDto.setPickupAddress(pickupLocation.getAddress());
-			orderDto.setPickupLocation(pickupLocation.getLocation());
+			//orderDto.setPickupLocation(pickupLocation.getLocation());
 			orderDto.setPickupAddressType(pickupLocation.isSystemGenerated());
 		}
 
@@ -38,7 +38,7 @@ public interface OrderMapper
 
 		if(deliveryLocation != null){
 			orderDto.setDeliveryAddress(deliveryLocation.getAddress());
-			orderDto.setDeliveryLocation(deliveryLocation.getLocation());
+		//	orderDto.setDeliveryLocation(deliveryLocation.getLocation());
 			orderDto.setDeliveryAddressType(deliveryLocation.isSystemGenerated());
 		}
 
@@ -49,13 +49,13 @@ public interface OrderMapper
 
 		Location pickupLocation  = new Location();
 
-		pickupLocation.setLocation(orderDto.getPickupLocation());
+		//pickupLocation.setLocation(orderDto.getPickupLocation());
 		pickupLocation.setAddress(orderDto.getPickupAddress());
 		pickupLocation.setSystemGenerated(orderDto.isPickupAddressType());
 
 		Location deliveryLocation  = new Location();
 
-		deliveryLocation.setLocation(orderDto.getDeliveryLocation());
+		//deliveryLocation.setLocation(orderDto.getDeliveryLocation());
 		deliveryLocation.setAddress(orderDto.getDeliveryAddress());
 		deliveryLocation.setSystemGenerated(orderDto.isDeliveryAddressType());
 

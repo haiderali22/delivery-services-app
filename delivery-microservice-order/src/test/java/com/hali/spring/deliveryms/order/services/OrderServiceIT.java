@@ -5,55 +5,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.BytesDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.utils.Bytes;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.geo.Point;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.listener.MessageListener;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.kafka.test.utils.ContainerTestUtils;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hali.spring.deliveryms.model.ItemDto;
@@ -69,9 +39,7 @@ import com.hali.spring.deliveryms.order.domain.OrderState;
 import com.hali.spring.deliveryms.order.domain.Product;
 import com.hali.spring.deliveryms.order.repositories.ItemRedisRepository;
 import com.hali.spring.deliveryms.order.repositories.OrderRepository;
-import com.hali.spring.deliveryms.order.services.OrderService;
 import com.hali.spring.deliveryms.order.utils.CartUtilities;
-import com.hali.spring.deliveryms.order.utils.JsonUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import se.svt.oss.junit5.redis.EmbeddedRedisExtension;
@@ -85,6 +53,7 @@ public class OrderServiceIT
 {
 	@RegisterExtension
     static EmbeddedRedisExtension staticExtension = new EmbeddedRedisExtension(true);
+	
 	
 	@Autowired
 	private OrderService service;
@@ -158,16 +127,21 @@ public class OrderServiceIT
 	void setUp() throws Exception
 	{
 		cartId  = "1234456";
-//		 System.setProperty("spring.kafka.bootstrap-servers", embeddedKafkaBroker.getBrokersAsString());
+
+		GeometryFactory geometryFactory = new GeometryFactory(); 
+
+	
+
+		
 		order = new OrderDto();
 		order.setPickupAddress("Add_Pickup");
 		order.setPickupAddressType(false);
-		order.setPickupLocation(new Point(2, 2));
-		
+	//	order.setPickupLocation(geometryFactory.createPoint(new Coordinate(1, 1)));
+
 		order.setDeliveryAddress("Ad_Delivery");
 		order.setDeliveryAddressType(true);
-		order.setDeliveryLocation(new Point(1, 1));
-		
+	//	order.setDeliveryLocation(geometryFactory.createPoint(new Coordinate(2, 2)));
+
 		order.setReferenceNumber("R1234");
 
 		orderRepo.deleteAll();

@@ -25,6 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Getter;
@@ -41,7 +42,8 @@ public class Order
 //extends Auditable<Long>
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(name = "id")
 	private String id; 
 
@@ -54,7 +56,7 @@ public class Order
 
 	@Embedded
 	@AttributeOverrides({
-		  @AttributeOverride( name = "location", column = @Column(name = "pickup_location")),
+		@AttributeOverride( name = "location", column = @Column(name = "pickup_location",columnDefinition = "POINT")),
 		  @AttributeOverride( name = "address", column = @Column(name = "pickup_address")),
 		  @AttributeOverride( name = "systemGenerated", column = @Column(name = "pickup_address_manual"))
 		})
@@ -62,7 +64,7 @@ public class Order
 
 	@Embedded
 	@AttributeOverrides({
-		  @AttributeOverride( name = "location", column = @Column(name = "delivery_location")),
+		  @AttributeOverride( name = "location", column = @Column(name = "delivery_location",columnDefinition = "POINT")),
 		  @AttributeOverride( name = "address" , column = @Column(name = "delivery_addres" )  ),
 		  @AttributeOverride( name = "systemGenerated", column = @Column(name = "delivery_address_manual"))
 		})

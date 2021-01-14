@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,13 +30,13 @@ import lombok.Setter;
 public class Product 
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 
-	@ManyToOne
-	@PrimaryKeyJoinColumn(name  = "company_id" , foreignKey = @ForeignKey (name ="fk_product_company_id"))
-	private Company company;
+//	@ManyToOne
+//	@PrimaryKeyJoinColumn(name  = "company_id" , foreignKey = @ForeignKey (name ="fk_product_company_id"))
+//	private Company company;
 
 	@Version
 	@Column(name = "version")
@@ -55,9 +57,9 @@ public class Product
 	private int quantity;
 
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "products_categories", joinColumns = {
-			@JoinColumn(name = "product_id", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "category_id", referencedColumnName = "id") })
-	private List<Category> categories;
+//	@ManyToMany(cascade = CascadeType.ALL)
+//	@JoinTable(name = "products_categories", joinColumns = {
+//			@JoinColumn(name = "product_id", referencedColumnName = "id") }, inverseJoinColumns = {
+//					@JoinColumn(name = "category_id", referencedColumnName = "id") })
+//	private List<Category> categories;
 }

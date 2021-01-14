@@ -31,7 +31,6 @@ public class ValidateOrderAction implements Action<OrderState, OrderEvent>
 	private final KafkaTemplate<String,Object> template;
 	private final OrderRepository orderRepository;
 	private final OrderMapper mapper;
-	private final ObjectMapper objMapper;
 
 	@Override
 	public void execute(StateContext<OrderState, OrderEvent> context) {
@@ -45,7 +44,7 @@ public class ValidateOrderAction implements Action<OrderState, OrderEvent>
 							order(mapper.map(order.get())).build();
 					
 						template.send(MessagingBeanConfig.ORDER_VALIDATE_QUEUE_REQUEST,
-														JsonUtil.convertToString(objMapper, req));
+														 req);
 					//MessageBuilder.withPayload(req).build());
 				}
 				else{

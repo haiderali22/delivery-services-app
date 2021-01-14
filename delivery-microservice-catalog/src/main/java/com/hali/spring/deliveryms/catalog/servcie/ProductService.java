@@ -10,7 +10,7 @@ import com.hali.spring.deliveryms.catalog.domain.Product;
 import com.hali.spring.deliveryms.catalog.mappper.ProductMapper;
 import com.hali.spring.deliveryms.catalog.repositories.CategoryRepository;
 import com.hali.spring.deliveryms.catalog.repositories.ProductRepository;
-import com.hali.spring.deliveryms.catalog.model.ProductDto;
+import com.hali.spring.deliveryms.model.ProductDto;
 
 import lombok.AllArgsConstructor;
 
@@ -19,23 +19,23 @@ import lombok.AllArgsConstructor;
 public class ProductService 
 {
 	private final ProductRepository productRepository; 
-	private final CategoryRepository categoryRepository; 
+//	private final CategoryRepository categoryRepository; 
 	private final ProductMapper productMapper;
 
 	public Product getProduct(String id) 
 	{		
 		return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product not found"));
 	}
-
-	public Page<Product> getCatgoryProducts(Long id, Pageable pageable) {
-		
-		return productRepository.getCatgoryByProducts(id,pageable);
-	}
-
-	public Page<Category> getCatgories(Pageable pageable) {
-		
-		return categoryRepository.findAll(pageable);
-	}
+//
+//	public Page<Product> getCatgoryProducts(Long id, Pageable pageable) {
+//		
+//		return productRepository.getCatgoryByProducts(id,pageable);
+//	}
+//
+//	public Page<Category> getCatgories(Pageable pageable) {
+//		
+//		return categoryRepository.findAll(pageable);
+//	}
 
 	public Page<Product> getCatgoryTop5Products() {
 		
@@ -50,6 +50,11 @@ public class ProductService
 
 	public void deleteProduct(String id) {
 		 productRepository.deleteById(id);
+	}
+
+	public ProductDto updateProduct(String id, ProductDto product) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

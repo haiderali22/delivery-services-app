@@ -17,6 +17,8 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.sun.istack.NotNull;
 
 import lombok.Getter;
@@ -31,7 +33,8 @@ import lombok.Setter;
 public class Item 
 {
 	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 
 	@Column (name = "quantity")

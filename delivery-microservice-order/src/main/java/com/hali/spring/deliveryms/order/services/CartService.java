@@ -24,7 +24,7 @@ public class CartService {
 		return itemRedisRepository.getCart(cartId);		
 	}
 
-	public void addItemToCart(String cartId, Long productId, Integer quantity) 
+	public void addItemToCart(String cartId, String productId, Integer quantity) 
 	{
 		ProductDto product = productClient.getProductById(productId);
 		ItemDto item = new ItemDto(quantity, product, CartUtilities.getSubTotalForItem(product,quantity));
@@ -32,7 +32,7 @@ public class CartService {
 		itemRedisRepository.addItemToCart(cartId, product.getId().toString(),item);
 	}
 
-	public void changeItemQuantity(String cartId, Long productId, Integer quantity) {
+	public void changeItemQuantity(String cartId, String productId, Integer quantity) {
 		List<ItemDto> cart = getCart(cartId);
 
 		for(ItemDto item : cart){
@@ -40,7 +40,7 @@ public class CartService {
 				itemRedisRepository.deleteItemFromCart(cartId, productId.toString());            
 				item.setQuantity(quantity);
 				item.setSubTotal(CartUtilities.getSubTotalForItem(item.getProduct(),quantity));           
-				itemRedisRepository.addItemToCart(cartId, productId.toString(),item);
+				itemRedisRepository.addItemToCart(cartId, productId,item);
 			}
 		}
 	}
@@ -49,10 +49,10 @@ public class CartService {
 		itemRedisRepository.deleteCart(cartId);
 	}
 
-	public void removeItemFromCart(String cartId, Long productId) {
+	public void removeItemFromCart(String cartId, String productId) {
 		//List<ItemDto> cart = getCart(cartId);
 
-		itemRedisRepository.deleteItemFromCart(cartId, productId.toString());
+		itemRedisRepository.deleteItemFromCart(cartId, productId);
 		
 //		for(ItemDto item : cart){
 //			if((item.getProduct().getId()).equals(productId)){
@@ -61,9 +61,9 @@ public class CartService {
 //		}		
 	}
 
-	public boolean checkIfItemIsExist(String cartId, Long productId) {
+	public boolean checkIfItemIsExist(String cartId, String productId) {
 		
-		return itemRedisRepository.checkKeyExists(cartId, productId.toString());
+		return itemRedisRepository.checkKeyExists(cartId, productId);
 		
 //		List<ItemDto> cart = getCart(cartId);
 //		for(ItemDto item : cart){

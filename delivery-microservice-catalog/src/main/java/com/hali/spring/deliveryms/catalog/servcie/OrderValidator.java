@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Component;
 
-import com.hali.spring.deliveryms.catalog.model.OrderDto;
+import com.hali.spring.deliveryms.model.OrderDto;
 import com.hali.spring.deliveryms.catalog.repositories.ProductRepository;
 
 import lombok.RequiredArgsConstructor;

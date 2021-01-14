@@ -1,4 +1,4 @@
-package com.hali.spring.deliveryms.catalog.model;
+package com.hali.spring.deliveryms.model;
 
 import lombok.Builder;
 import lombok.Getter;

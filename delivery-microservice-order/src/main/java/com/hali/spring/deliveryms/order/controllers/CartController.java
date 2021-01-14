@@ -29,7 +29,7 @@ public class CartController
 	}	
 	
 	 @PostMapping(value = "/{cartId}", params = {"productId", "quantity"})
-	 public void addItemToCart(@PathVariable("cartId") String cartId , @RequestParam("productId") Long productId,
+	 public void addItemToCart(@PathVariable("cartId") String cartId , @RequestParam("productId") String productId,
 	            @RequestParam("quantity") Integer quantity)
 	 {
 		 cartService.addItemToCart(cartId,productId,quantity);
@@ -37,7 +37,7 @@ public class CartController
 	 
 	 @DeleteMapping(value = "/{cartId}", params = {"productId"})
 	 public void removeItemFromCart(@PathVariable("cartId") String cartId , 
-			 @RequestParam("productId") Long productId)
+			 @RequestParam("productId") String productId)
 	 {
 		 cartService.removeItemFromCart(cartId,productId);
 	 } 

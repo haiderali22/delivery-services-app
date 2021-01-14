@@ -13,7 +13,6 @@
 	<name>delivery-microservice-catalog</name>
 	<description>Demo project for Spring Boot</description>
 	
-	<dependencies>
-	
+	<dependencies>	
 	</dependencies>
 </project>

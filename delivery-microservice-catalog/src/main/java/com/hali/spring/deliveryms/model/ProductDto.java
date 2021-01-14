@@ -1,4 +1,4 @@
-package com.hali.spring.deliveryms.catalog.model;
+package com.hali.spring.deliveryms.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 public class ProductDto implements Serializable
 {
-	private Long id;
+	private String id;
 	private String productName;
 	private BigDecimal price;
 	private String description;

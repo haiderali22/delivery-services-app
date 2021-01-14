@@ -1,6 +1,6 @@
 package com.hali.spring.deliveryms.model;
 
-public class OrderException extends Exception 
+public class OrderException extends RuntimeException 
 {	
 	private static final long serialVersionUID = 1L;
 	
