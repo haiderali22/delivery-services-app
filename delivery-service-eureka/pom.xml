@@ -18,6 +18,9 @@
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2020.0.0</spring-cloud.version>
+		<spring-boot.build-image.imageName>haiderali22/${project.artifactId}:${project.version}</spring-boot.build-image.imageName>
+		<jkube.generator.name>${spring-boot.build-image.imageName}</jkube.generator.name>
+		<docker.skip.tag>true</docker.skip.tag>
 	</properties>
 
 	<dependencies>
@@ -56,6 +59,20 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.jkube</groupId>
+				<artifactId>kubernetes-maven-plugin</artifactId>
+				<version>1.0.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>resource</goal>
+							<goal>build</goal>
+							<goal>apply</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

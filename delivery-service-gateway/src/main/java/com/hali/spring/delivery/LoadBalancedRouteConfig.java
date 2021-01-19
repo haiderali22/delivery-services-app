@@ -12,10 +12,10 @@ public class LoadBalancedRouteConfig {
 	public RouteLocator loadBalancedRoutes(RouteLocatorBuilder builder)
 	{
 		return builder.routes()
-				.route("order-service", r-> r.path("/api/v1/order/**").
+				.route("order-service", r-> r.path("/api/order/**").
 						uri("lb://order-service"))
-				.route("product-service", r-> r.path("/api/v1/product/**").
-						uri("lb://prodctcatalog-service"))
+				.route("product-service", r-> r.path("/api/product/**").
+						uri("lb://prodct-catalog-service"))
 				.build();
 	}
 }

@@ -24,7 +24,7 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
 		<awaitility.version>4.0.3</awaitility.version>
-		<spring-cloud.version>2020.0.0</spring-cloud.version>		
+		<spring-cloud.version>2020.0.0</spring-cloud.version>
 	</properties>
 
 	<dependencyManagement>
@@ -35,7 +35,7 @@
 				<version>${spring-cloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>		
+			</dependency>
 			<dependency>
 				<groupId>org.mapstruct</groupId>
 				<artifactId>mapstruct</artifactId>
@@ -245,6 +245,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<layout>LAYERED_JAR</layout>
+				</configuration>
 			</plugin>
 
 			<plugin>
