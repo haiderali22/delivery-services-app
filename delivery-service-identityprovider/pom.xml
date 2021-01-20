@@ -7,7 +7,7 @@
 		<groupId>com.github.thomasdarimont.embedded-spring-boot-keycloak-server</groupId>
 		<artifactId>embedded-keycloak-server-spring-boot-parent</artifactId>
 		<version>2.4.0</version>
-		  <relativePath/>
+		<relativePath />
 	</parent>
 	<groupId>com.hali.spring</groupId>
 	<artifactId>delivery-service-identityprovider</artifactId>
@@ -32,6 +32,19 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludeDevtools>true</excludeDevtools>
+					<requiresUnpack>
+						<dependency>
+							<groupId>org.keycloak</groupId>
+							<artifactId>keycloak-connections-jpa</artifactId>
+						</dependency>
+						<dependency>
+							<groupId>org.keycloak</groupId>
+							<artifactId>keycloak-model-jpa</artifactId>
+						</dependency>
+					</requiresUnpack>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
