@@ -1,0 +1,7 @@
+## Mysql
+docker run --name delivery-service-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -d mysql
+
+#Redis
+docker run --name delivery-service-redis -p 6379:6379 -d redis
+
+
